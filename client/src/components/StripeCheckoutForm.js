@@ -53,30 +53,37 @@ const StripeCheckoutForm = ({ amount, billing_details, closeAndRedirect }) => {
       // if stripe or elements not loaded, disable the submit option
       return;
     }
-    const payload = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardCvcElement),
-    });
 
-    if (payload.error) {
-      setLoading(false);
-      alert(payload.error.message);
-      return;
-    }
+    try {
+      const { token } = await stripe.createToken(
+        elements.getElement(CardCvcElement),
+        {
+          name: billing_details.name,
+          address_line1: billing_details.address.line1,
+          address_line2: billing_details.address.line2,
+          address_city: billing_details.address.city,
+          address_zip: billing_details.address.postal_code,
+          address_state: billing_details.address.state,
+          address_country: billing_details.address.country,
+        }
+      );
 
-    if (payload.paymentMethod) {
-      // Inject user details to payment method object
-      const payment = {
-        ...payload,
-        paymentMethod: {
-          ...payload.paymentMethod,
-          billing_details: billing_details,
-        },
-      };
-      // send the payload to backend
-      console.log(payment);
-      setLoading(false);
-      closeAndRedirect("success");
+      if (token.error) {
+        console.log("Error creating token");
+      } else {
+        const result = await fetch("http://localhost:5000/payment", {
+          method: "post",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ token, amount }),
+        });
+        console.log(result);
+        setLoading(false);
+        closeAndRedirect("success");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
