@@ -9,3 +9,7 @@ export const removeCartItem = (id) => {
 export const updateCartItem = (id, item) => {
   return { type: "UPDATE_ITEM", payload: { id, item } };
 };
+
+export const clearCartList = () => {
+  return { type: "CLEAR_CART" };
+};

@@ -23,13 +23,14 @@ import UpdatePassword from "./pages/UpdatePassword";
 import UpdateEmail from "./pages/UpdateEmail";
 import Cart from "./pages/Cart";
 import Category from "./pages/Category";
-import OrderSuccess from "./pages/OrderSuccess";
+import Order from "./pages/Order";
 import OrderTracking from "./pages/OrderTracking";
 
 import NavBar from "./layouts/NavBar";
 import Footer from "./layouts/Footer";
 
 import useStyles from "./styles/AppStyles";
+import ProductPage from "./pages/ProductPage";
 
 const App = ({
   currentUser,
@@ -39,8 +40,6 @@ const App = ({
   addListOfProducts,
   addProduct,
 }) => {
-  console.log("Im rendered");
-
   //Styles
   const classes = useStyles();
 
@@ -82,6 +81,13 @@ const App = ({
         <Route exact path="/shop" render={() => <Shop />} />
         <Route
           exact
+          path="/product/:product_id"
+          render={({ match }) => <ProductPage match={match} />}
+        />
+
+        {/* Login Route ==> Protected Route */}
+        <Route
+          exact
           path="/login"
           render={() =>
             firebaseInitialized ? (
@@ -95,6 +101,8 @@ const App = ({
             )
           }
         />
+
+        {/* Signup Route ==> Protected Route */}
         <Route
           exact
           path="/signup"
@@ -111,6 +119,7 @@ const App = ({
           }
         />
 
+        {/* Account Route ==> Protected Route */}
         <Route
           path="/account"
           render={() =>
@@ -128,24 +137,38 @@ const App = ({
           render={() => <SendVerificationEmail />}
         />
 
+        {/* // TODO: Update password Route ==> Protected Route */}
         <Route exact path="/updatePassword" render={() => <UpdatePassword />} />
+
+        {/* // TODO: Update Email Route ==> Protected Route */}
         <Route exact path="/updateEmail" render={() => <UpdateEmail />} />
 
+        {/* // Checkout Route ==> Protected Route */}
         <Route
           exact
           path="/checkout"
           render={() => (currentUser ? <Checkout /> : <Redirect to="/login" />)}
         />
+
+        {/* //Cart Route */}
         <Route exact path="/cart" render={() => <Cart />} />
 
+        {/* // Collection Route */}
         <Route exact path="/collection/:collectionId" component={Category} />
+
+        {/* // Payment Done Router ==> Protected Route */}
         <Route
           exact
-          path="/order_complete/:order_id"
-          component={OrderSuccess}
+          path="/order/:order_id"
+          render={() => (currentUser ? <Order /> : <Redirect to="/" />)}
         />
 
-        <Route exact path="/order/:order_id" component={OrderTracking} />
+        {/* // Payment Done Router ==> Protected Route */}
+        <Route
+          exact
+          path="/order_tracking/:order_id"
+          render={() => (currentUser ? <OrderTracking /> : <Redirect to="/" />)}
+        />
       </Switch>
       <Footer />
     </div>

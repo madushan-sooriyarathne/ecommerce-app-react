@@ -1,18 +1,18 @@
 import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
-  OrderSuccess: {
+  Order: {
     display: "flex",
     flexDirection: "column",
     // alignItems: "center",
   },
-  OrderSuccess_heading: {
+  Order_heading: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     marginBottom: "5rem",
   },
-  OrderSuccess_OrderSummery: {
+  Order_OrderSummery: {
     backgroundColor: "#FCF4FB",
     padding: "5rem",
     width: "100rem",
@@ -39,5 +39,10 @@ export default createUseStyles({
     "& > *:not(:last-child)": {
       marginRight: "1rem",
     },
+  },
+  Container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 });

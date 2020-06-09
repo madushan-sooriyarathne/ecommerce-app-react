@@ -24,7 +24,7 @@ const Checkout = ({ subTotal, currentUser }) => {
   const [shipping, setShipping] = useState(10);
   const [discount, setDiscount] = useState(0);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [billingDetails, setBillingDetails] = useState({});
+  const [customerDetails, setCustomerDetails] = useState({});
 
   const total = (subTotal + shipping - subTotal * (discount / 100)).toFixed(2);
 
@@ -38,25 +38,56 @@ const Checkout = ({ subTotal, currentUser }) => {
   const [email, updateEmail, resetEmail] = useInputState(
     currentUser.email || ""
   );
-  const [country, updateCountry, resetCountry] = useInputState(
-    currentUser.address.country || ""
-  );
+
+  // Billing address form status
   const [
-    addressLineOne,
-    updateAddressLineOne,
-    resetAddressLineOne,
+    billingCountry,
+    updateBillingCountry,
+    resetBillingCountry,
+  ] = useInputState(currentUser.address.country || "");
+  const [
+    billingAddressLineOne,
+    updateBillingAddressLineOne,
+    resetBillingAddressLineOne,
   ] = useInputState(currentUser.address.addressLineOne || "");
   const [
-    addressLineTwo,
-    updateAddressLineTwo,
-    resetAddressLineTwo,
+    billingAddressLineTwo,
+    updateBillingAddressLineTwo,
+    resetBillingAddressLineTwo,
   ] = useInputState(currentUser.address.addressLineTwo || "");
-  const [city, updateCity, resetCity] = useInputState(
+  const [billingCity, updateBillingCity, resetBillingCity] = useInputState(
     currentUser.address.city || ""
   );
-  const [postalCode, updatePostalCode, resetPostalCode] = useInputState(
-    currentUser.address.postalCode || ""
+  const [
+    billingPostalCode,
+    updateBillingPostalCode,
+    resetBillingPostalCode,
+  ] = useInputState(currentUser.address.postalCode || "");
+
+  // Shipping address form state
+  const [
+    shippingCountry,
+    updateShippingCountry,
+    resetShippingCountry,
+  ] = useInputState(currentUser.address.country || "");
+  const [
+    shippingAddressLineOne,
+    updateShippingAddressLineOne,
+    resetShippingAddressLineOne,
+  ] = useInputState(currentUser.address.addressLineOne || "");
+  const [
+    shippingAddressLineTwo,
+    updateShippingAddressLineTwo,
+    resetShippingAddressLineTwo,
+  ] = useInputState(currentUser.address.addressLineTwo || "");
+  const [shippingCity, updateShippingCity, resetShippingCity] = useInputState(
+    currentUser.address.city || ""
   );
+  const [
+    shippingPostalCode,
+    updateShippingPostalCode,
+    resetShippingPostalCode,
+  ] = useInputState(currentUser.address.postalCode || "");
 
   const handleFormSubmit = () => {
     console.log(formRef);
@@ -64,18 +95,27 @@ const Checkout = ({ subTotal, currentUser }) => {
 
     // TODO: check if form is validated
     if (true) {
-      setBillingDetails({
-        address: {
-          city: city,
-          country: country,
-          line1: addressLineOne,
-          line2: addressLineTwo,
-          postal_code: postalCode,
-          state: "",
-        },
+      setCustomerDetails({
         email: email,
         name: fullName,
         phone: phoneNumber,
+        stripeCustomerId: currentUser.stripeCustomerId,
+        billing_address: {
+          city: billingCity,
+          country: billingCountry,
+          line1: billingAddressLineOne,
+          line2: billingAddressLineTwo,
+          postal_code: billingPostalCode,
+          state: "",
+        },
+        shipping_address: {
+          city: shippingCity,
+          country: shippingCountry,
+          line1: shippingAddressLineOne,
+          line2: shippingAddressLineTwo,
+          postal_code: shippingPostalCode,
+          state: "",
+        },
       });
 
       setPopupOpen(true);
@@ -85,11 +125,16 @@ const Checkout = ({ subTotal, currentUser }) => {
     resetFullName();
     resetPhoneNumber();
     resetEmail();
-    resetCountry();
-    resetAddressLineOne();
-    resetAddressLineTwo();
-    resetCity();
-    resetPostalCode();
+    resetBillingCountry();
+    resetBillingAddressLineOne();
+    resetBillingAddressLineTwo();
+    resetBillingCity();
+    resetBillingPostalCode();
+    resetShippingCountry();
+    resetShippingAddressLineOne();
+    resetShippingAddressLineTwo();
+    resetShippingCity();
+    resetShippingPostalCode();
   };
 
   const closePopup = () => {
@@ -134,44 +179,44 @@ const Checkout = ({ subTotal, currentUser }) => {
                 />
               </div>
               <FormField
-                id="CountryField"
+                id="BillingCountryField"
                 label="Country"
-                type="LastName"
+                type="text"
                 isRequired={true}
-                value={country}
-                onChange={updateCountry}
+                value={billingCountry}
+                onChange={updateBillingCountry}
               />
               <FormField
-                id="AddressLineOneField"
+                id="BillingAddressLineOneField"
                 label="Address Line 1"
                 type="text"
                 isRequired={true}
-                value={addressLineOne}
-                onChange={updateAddressLineOne}
+                value={billingAddressLineOne}
+                onChange={updateBillingAddressLineOne}
               />
               <FormField
-                id="AddressLineTwoField"
+                id="BillingAddressLineTwoField"
                 label="Address Line 2"
                 type="text"
                 isRequired={true}
-                value={addressLineTwo}
-                onChange={updateAddressLineTwo}
+                value={billingAddressLineTwo}
+                onChange={updateBillingAddressLineTwo}
               />
               <FormField
-                id="CityField"
+                id="BillingCityField"
                 label="City"
                 type="text"
                 isRequired={true}
-                value={city}
-                onChange={updateCity}
+                value={billingCity}
+                onChange={updateBillingCity}
               />
               <FormField
-                id="PostalCodeField"
+                id="BillingPostalCodeField"
                 label="Postal Code"
                 type="LastName"
                 isRequired={true}
-                value={postalCode}
-                onChange={updatePostalCode}
+                value={billingPostalCode}
+                onChange={updateBillingPostalCode}
               />
             </form>
           </div>
@@ -183,32 +228,42 @@ const Checkout = ({ subTotal, currentUser }) => {
               <FormField
                 id="ShippingCountryField"
                 label="Country"
-                type="LastName"
+                type="text"
                 isRequired={true}
+                value={shippingCountry}
+                onChange={updateShippingCountry}
               />
               <FormField
                 id="ShippingAddressLineOneField"
                 label="Address Line 1"
                 type="text"
                 isRequired={true}
+                value={shippingAddressLineOne}
+                onChange={updateShippingAddressLineOne}
               />
               <FormField
                 id="ShippingAddressLineTwoField"
                 label="Address Line 2"
                 type="text"
                 isRequired={true}
+                value={shippingAddressLineTwo}
+                onChange={updateShippingAddressLineTwo}
               />
               <FormField
                 id="ShippingCityField"
                 label="City"
                 type="text"
                 isRequired={true}
+                value={shippingCity}
+                onChange={updateShippingCity}
               />
               <FormField
                 id="ShippingPostalCodeField"
                 label="Postal Code"
                 type="LastName"
                 isRequired={true}
+                value={shippingPostalCode}
+                onChange={updateShippingPostalCode}
               />
             </form>
           </div>
@@ -268,7 +323,7 @@ const Checkout = ({ subTotal, currentUser }) => {
       </div>
       <StripePaymentPopup
         amount={total}
-        billing_details={billingDetails}
+        customerDetails={customerDetails}
         popupOpen={popupOpen}
         closePopup={closePopup}
       />

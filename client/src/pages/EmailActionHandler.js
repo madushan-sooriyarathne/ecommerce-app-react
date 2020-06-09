@@ -7,8 +7,6 @@ import RecoverEmail from "./RecoverEmail";
 const EmailActionHandler = () => {
   const url = new URL(document.location.href);
 
-  console.log(url);
-
   const mode = url.searchParams.get("mode");
   const oobCode = url.searchParams.get("oobCode");
 

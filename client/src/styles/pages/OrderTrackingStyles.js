@@ -1,6 +1,12 @@
 import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
+  Container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
   OrderTracking: {
     width: "100rem",
   },

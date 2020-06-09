@@ -23,6 +23,7 @@
     "stripe": "^8.60.0"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0"
+    "concurrently": "^5.2.0",
+    "eslint-plugin-react": "^7.20.0"
   }
 }

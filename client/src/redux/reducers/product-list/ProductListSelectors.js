@@ -8,20 +8,17 @@ const collectionSelector = (collectionId) => {
   );
 };
 
-// TODO: REMOVE OBSOLETE CODE
-// const mensProductSelector = createSelector(productListSelector, (productList) =>
-//   productList.filter((product) => product.category === "men")
-// );
-
-// const womensProductSelector = createSelector(
-//   productListSelector,
-//   (productList) => productList.filter((product) => product.category === "women")
-// );
-
-// const sportsProductSelector = createSelector(
-//   productListSelector,
-//   (productList) => productList.filter((product) => product.category === "sport")
-// );
+const productByIdSelector = (productId) =>
+  createSelector(productListSelector, (productList) => {
+    const filteredList = productList.filter(
+      (product) => product.id === productId
+    );
+    if (filteredList.length < 1) {
+      return null;
+    } else {
+      return filteredList[0];
+    }
+  });
 
 const getAvailableProducts = createSelector(
   productListSelector,
@@ -44,4 +41,9 @@ const getAvailableProducts = createSelector(
     })
 );
 
-export { collectionSelector, productListSelector, getAvailableProducts };
+export {
+  collectionSelector,
+  productListSelector,
+  getAvailableProducts,
+  productByIdSelector,
+};

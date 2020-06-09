@@ -92,6 +92,7 @@ const CartDropDownMenu = ({
                   name={item.name}
                   qtc={item.qtc}
                   price={parseFloat(item.price)}
+                  key={item.id}
                 />
               ))}
             </div>

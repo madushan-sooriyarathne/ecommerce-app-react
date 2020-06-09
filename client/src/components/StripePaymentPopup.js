@@ -14,25 +14,20 @@ import { useHistory } from "react-router-dom";
 // Load stripe as a promise
 const stripePromise = loadStripe("pk_test_ATPJil7rjAI6NefMCT1Cr10100QtHkMk19");
 
-const StripePaymentPopup = ({
-  amount,
-  billing_details,
-  popupOpen,
-  closePopup,
-}) => {
+const StripePaymentPopup = ({ customerDetails, popupOpen, closePopup }) => {
   //Styles
   const classes = useStyles();
 
   // history
   const history = useHistory();
 
-  const closeAndRedirect = (type = "success") => {
+  const closeAndRedirect = (orderId, type = "success") => {
     if (type === "success") {
       // Close the popup
       closePopup();
 
       // Redirect to success page
-      history.push("/");
+      history.push(`/order/${orderId}?payment=true`);
     }
   };
 
@@ -59,8 +54,7 @@ const StripePaymentPopup = ({
         </svg>
         <Elements stripe={stripePromise}>
           <StripeCheckoutForm
-            amount={amount}
-            billing_details={billing_details}
+            customerDetails={customerDetails}
             closeAndRedirect={closeAndRedirect}
           />
         </Elements>

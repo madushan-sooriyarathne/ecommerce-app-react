@@ -15,6 +15,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
+// Initializing the firebase object
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
@@ -28,6 +29,7 @@ googleProvider.setCustomParameters({ prompt: "consent" });
 let facebookProvider = new firebase.auth.FacebookAuthProvider();
 facebookProvider.setCustomParameters({ display: "popup" });
 
+// Database Operations
 const getUserDocument = async (uid) => {
   if (!uid) return null;
   try {
@@ -41,7 +43,7 @@ const getUserDocument = async (uid) => {
   }
 };
 
-// Store signed up user in firestore database
+// Store signed-up user in firestore database
 const persistUser = async (userAuth, additionalData) => {
   if (!userAuth) return null;
   const {
@@ -65,6 +67,8 @@ const persistUser = async (userAuth, additionalData) => {
         phoneNumber,
         photoURL,
         providerId: userAuth.providerData[0].providerId,
+        cart: [],
+        stripeCustomerId: null,
         ...additionalData,
       })
       .then(() => {
@@ -77,6 +81,46 @@ const persistUser = async (userAuth, additionalData) => {
 
   return getUserDocument(userAuth.uid);
 };
+
+// update current users properties
+const updateCurrentUser = async (userId, updatedFields) => {
+  const userRef = firestore.collection("users").doc(userId);
+
+  try {
+    const userSnap = await userRef.get();
+
+    if (userSnap.exists) {
+      userRef.update(updatedFields);
+    } else {
+      console.error("User does not exists in the database");
+    }
+  } catch (error) {
+    console.error("Error occurred while retrieving the customer");
+  }
+};
+
+// Save the order in firestore database
+const saveOrder = async (orderDetails, order_id) => {
+  const orderRef = firestore.collection("orders").doc(order_id);
+
+  try {
+    const orderSnap = await orderRef.get();
+    // if order record already exists, skip. Otherwise save the order in DB
+    if (!orderSnap.exists) {
+      await orderRef.set(orderDetails);
+      return { status: true, message: `Successfully stored the order in DB` };
+    } else {
+      return { status: false, message: "order already exists!" };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: `Error occurred while saving order in DB : ${error.message}`,
+    };
+  }
+};
+
+// Authentication Operations
 
 // Signup / Sign in using Google
 const signupWithGoogle = () => {
@@ -113,4 +157,6 @@ export {
   signupWithEmailAndPassword,
   signOutUser,
   persistUser,
+  saveOrder,
+  updateCurrentUser,
 };
