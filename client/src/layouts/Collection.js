@@ -17,16 +17,7 @@ const Collection = ({ type, productList }) => {
       </div>
       <CollectionContainer>
         {productList.map((product) => (
-          <ProductListItem
-            name={product.name}
-            category={product.category}
-            price={parseFloat(product.price)}
-            ratings={product.ratings}
-            img={product.imgURL}
-            isAvailable={product.availability}
-            isFavorite={true}
-            id={product.id}
-          />
+          <ProductListItem product={product} id={product.id} />
         ))}
       </CollectionContainer>
     </div>

@@ -88,7 +88,7 @@ const CartDropDownMenu = ({
             <div className={classes.CartDropDownMenu_items}>
               {cartList.map((item) => (
                 <CartMenuItem
-                  img={item.img}
+                  imgURL={item.imgURL}
                   name={item.name}
                   qtc={item.qtc}
                   price={parseFloat(item.price)}

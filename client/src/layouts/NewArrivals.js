@@ -53,17 +53,7 @@ const NewArrivals = ({ productList }) => {
       <CollectionContainer>
         {selectors.filter((selector) => selector.isActive)[0].id === "all"
           ? productList.map((product) => (
-              <ProductListItem
-                name={product.name}
-                category={product.category}
-                price={parseFloat(product.price)}
-                ratings={product.ratings}
-                img={product.imgURL}
-                isAvailable={product.availability}
-                isFavorite={true}
-                id={product.id}
-                key={product.id}
-              />
+              <ProductListItem product={product} key={product.id} />
             ))
           : productList
               .filter(
@@ -72,16 +62,7 @@ const NewArrivals = ({ productList }) => {
                   selectors.filter((selector) => selector.isActive)[0].id
               )
               .map((product) => (
-                <ProductListItem
-                  name={product.name}
-                  category={product.category}
-                  price={parseFloat(product.price)}
-                  ratings={product.ratings}
-                  img={product.imgURL}
-                  isAvailable={product.availability}
-                  isFavorite={true}
-                  id={product.id}
-                />
+                <ProductListItem product={product} key={product.id} />
               ))}
       </CollectionContainer>
     </div>

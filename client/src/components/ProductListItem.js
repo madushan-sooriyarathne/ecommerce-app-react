@@ -10,19 +10,11 @@ import useStyles from "../styles/components/ProductListItemStyles";
 import spirtes from "../img/svg/sprites.svg";
 import { useHistory } from "react-router-dom";
 
-const ProductListItem = ({
-  id,
-  img,
-  ratings,
-  name,
-  category,
-  price,
-  isAvailable,
-  isFavorite,
-  addCartItem,
-}) => {
+const ProductListItem = ({ product, addItemToCart, isFavorite = true }) => {
   // History hook
   const history = useHistory();
+
+  const { id, imgURL, ratings, name, category, price, sizes, colors } = product;
 
   // Event handlers
   // Item Click Event
@@ -35,17 +27,19 @@ const ProductListItem = ({
     // Stop event propagation
     event.stopPropagation();
 
-    // Add item to cart
-    addCartItem({
+    const item = {
       id,
-      img,
+      imgURL,
       ratings,
       name,
       category,
       price,
-      isAvailable,
-      isFavorite,
-    });
+      color: colors[0],
+      size: sizes[0],
+    };
+
+    // Add item to cart
+    addItemToCart(item);
   };
 
   //Add to Favorite event
@@ -56,7 +50,7 @@ const ProductListItem = ({
     // TODO : add to current user's favorite list
   };
 
-  const classes = useStyles({ img, isAvailable });
+  const classes = useStyles({ img: imgURL });
 
   return (
     <div className={classes.ProductListItem} onClick={handleItemClick}>
@@ -99,7 +93,7 @@ const ProductListItem = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  addCartItem: (item) => dispatch(addCartItem(item)),
+  addItemToCart: (item) => dispatch(addCartItem(item)),
 });
 
 export default connect(null, mapDispatchToProps)(ProductListItem);

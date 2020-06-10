@@ -99,6 +99,40 @@ const updateCurrentUser = async (userId, updatedFields) => {
   }
 };
 
+const addToFavorite = async (userId, productId) => {
+  const userRef = firestore.collection("users").doc(userId);
+
+  try {
+    const userSnap = await userRef.get();
+
+    if (userSnap.exists) {
+      userRef.update({ favorites: [...userSnap.data().favorites, productId] });
+    } else {
+      console.error("User does not exists in the database");
+    }
+  } catch (error) {
+    console.error(`Error retrieving the user : ${error.message}`);
+  }
+};
+
+const removeFavorite = async (userId, productId) => {
+  const userRef = firestore.collection("users").doc(userId);
+
+  try {
+    const userSnap = await userRef.get();
+
+    if (userSnap.exists) {
+      userRef.update({
+        favorites: userSnap.data().favorites.filter((fav) => fav !== productId),
+      });
+    } else {
+      console.error("User does not exists in the database");
+    }
+  } catch (error) {
+    console.error(`Error retrieving the user : ${error.message}`);
+  }
+};
+
 // Save the order in firestore database
 const saveOrder = async (orderDetails, order_id) => {
   const orderRef = firestore.collection("orders").doc(order_id);
@@ -159,4 +193,6 @@ export {
   persistUser,
   saveOrder,
   updateCurrentUser,
+  addToFavorite,
+  removeFavorite,
 };

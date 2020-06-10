@@ -79,10 +79,17 @@ const App = ({
       <Switch>
         <Route exact path="/" render={() => <Home />} />
         <Route exact path="/shop" render={() => <Shop />} />
+
         <Route
           exact
           path="/product/:product_id"
-          render={({ match }) => <ProductPage match={match} />}
+          render={({ match }) =>
+            firebaseInitialized ? (
+              <ProductPage match={match} />
+            ) : (
+              <Redirect to="/" />
+            )
+          }
         />
 
         {/* Login Route ==> Protected Route */}

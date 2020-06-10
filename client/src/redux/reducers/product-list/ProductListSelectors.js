@@ -11,7 +11,7 @@ const collectionSelector = (collectionId) => {
 const productByIdSelector = (productId) =>
   createSelector(productListSelector, (productList) => {
     const filteredList = productList.filter(
-      (product) => product.id === productId
+      (product) => product && product.id === productId
     );
     if (filteredList.length < 1) {
       return null;

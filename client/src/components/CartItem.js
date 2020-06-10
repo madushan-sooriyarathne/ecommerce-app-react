@@ -12,7 +12,7 @@ const CartItem = ({
 }) => {
   const classes = useStyles({ isPurchased });
 
-  const { id, img, name, qtc, price } = item;
+  const { id, imgURL, name, qtc, price, color, size } = item;
 
   const handleAdd = (event) => {
     const updatedItem = { ...item, qtc: qtc + 1 };
@@ -28,23 +28,23 @@ const CartItem = ({
 
   return (
     <div className={classes.CartItem}>
-      <img src={img} alt={name} className={classes.CartItem_img}></img>
+      <img src={imgURL} alt={name} className={classes.CartItem_img}></img>
       <div className={classes.CartItem_details}>
         <div className={classes.Details_main}>
           <p className={classes.Details_main_name}>{name}</p>
           {isPurchased ? (
             <div className={classes.Details_main_price_with_qtc}>
-              <span className={classes.price_bold}>{`$ ${price.toFixed(
-                2
-              )}`}</span>{" "}
+              <span className={classes.price_bold}>{`$ ${parseFloat(
+                price
+              ).toFixed(2)}`}</span>{" "}
               x <span className={classes.qtc_bold}>{qtc}</span>
             </div>
           ) : (
             <>
               {" "}
-              <p className={classes.Details_main_price}>{`$ ${price.toFixed(
-                2
-              )}`}</p>
+              <p className={classes.Details_main_price}>{`$ ${parseFloat(
+                price
+              ).toFixed(2)}`}</p>
               <div className={classes.Details_main_qtc}>
                 <svg
                   className={`${classes.Qtc_btn} ${classes.Qtc_btn_minus} ${
@@ -72,7 +72,7 @@ const CartItem = ({
         </div>
         <div className={classes.Details_sub}>
           <p className={classes.Details_item_preference}>
-            Color: Black | Size: XL
+            Color: {color.name.toUpperCase()} | Size: {size.toUpperCase()}
           </p>
           {!isPurchased && (
             <svg
