@@ -10,6 +10,7 @@ import {
 import { auth, persistUser, firestore } from "./utils/FirebaseUtils";
 import { setCurrentUser } from "./redux/reducers/user/UserActions";
 import { setInitialized } from "./redux/reducers/firebase/FirebaseAction";
+import { updateFavoriteProductList } from "./redux/reducers/favorite-product-list/FavoriteProductListActions";
 
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -39,6 +40,7 @@ const App = ({
   setInitialized,
   addListOfProducts,
   addProduct,
+  updateFavorites,
 }) => {
   //Styles
   const classes = useStyles();
@@ -49,6 +51,9 @@ const App = ({
       // on Email and password auth, since user is already stored in database below method will just return that stored entry
       const user = await persistUser(userAuth);
       setCurrentUser(user);
+
+      // Update the favorite product list
+      updateFavorites(user.favorites);
 
       //Set Firebase state
       setInitialized();
@@ -187,6 +192,8 @@ const mapDispatchToProps = (dispatch) => ({
   setInitialized: () => dispatch(setInitialized()),
   addProduct: (product) => dispatch(addProduct(product)),
   addListOfProducts: (products) => dispatch(addListOfProducts(products)),
+  updateFavorites: (productList) =>
+    dispatch(updateFavoriteProductList(productList)),
 });
 
 const mapStateToProps = (state) => ({

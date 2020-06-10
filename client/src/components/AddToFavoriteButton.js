@@ -7,6 +7,7 @@ import sprites from "../img/svg/sprites.svg";
 import useStyles from "../styles/components/AddToFavoriteButtonStyles";
 
 const AddToFavoriteButton = (props) => {
+  // Destructuring the props
   const {
     currentUserId,
     productId,
@@ -15,9 +16,13 @@ const AddToFavoriteButton = (props) => {
     addToFavoriteList,
     isSmall = false,
   } = props;
+
   // Styles
   const classes = useStyles({ isSmall });
 
+  // Adding to user's favorite list
+  // This favorite list is just a redux state.
+  // Firebase user's favorite list update functionality is in below useEffect() hook
   const handleFavorite = (event) => {
     event.stopPropagation();
 
