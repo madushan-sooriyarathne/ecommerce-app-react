@@ -89,18 +89,4 @@ export default createUseStyles({
     alignItems: "center",
     marginTop: "1rem",
   },
-
-  Item_favoriteBtn: {
-    fill: "rgba(144, 112, 140, 1)",
-    width: "2rem",
-    height: "2rem",
-    marginRight: "1rem",
-    cursor: "pointer",
-    transition: "all 0.2s ease-out",
-
-    "&:hover": {
-      transform: "scale(1.1)",
-      fill: "#3c2858",
-    },
-  },
 });

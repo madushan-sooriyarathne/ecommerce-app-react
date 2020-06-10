@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import {
   addToFavorite,
   removeFromFavorite,
 } from "../redux/reducers/favorite-product-list/FavoriteProductListActions";
-
+import { getCurrentUserId } from "../redux/reducers/user/UserSelectors";
 import { productByIdSelector } from "../redux/reducers/product-list/ProductListSelectors";
 import { addCartItem } from "../redux/reducers/cart-list/CartListActions";
+import { checkFavoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 
 import Page from "./Page";
 
@@ -20,9 +21,9 @@ import AddToFavoriteButton from "../components/AddToFavoriteButton";
 import useStyles from "../styles/pages/ProductPageStyles";
 
 import useListState from "../hooks/UseListState";
-import { checkFavoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 
 const ProductPage = ({
+  currentUserId,
   currentProduct,
   isFavorite,
   addItemToCart,
@@ -146,10 +147,11 @@ const ProductPage = ({
                   Add to Cart
                 </ButtonStatic>
                 <AddToFavoriteButton
+                  currentUserId={currentUserId}
                   productId={currentProduct.id}
                   isFavorite={isFavorite}
-                  removeFromFavorite={removeFromFavoriteList}
-                  addToFavorite={addToFavoriteList}
+                  removeFromFavoriteList={removeFromFavoriteList}
+                  addToFavoriteList={addToFavoriteList}
                 />
               </div>
             </div>
@@ -183,6 +185,7 @@ const mapStateToProps = (state, ownProps) => ({
   isFavorite: checkFavoriteProductListSelector(
     ownProps.match.params.product_id
   )(state),
+  currentUserId: getCurrentUserId(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

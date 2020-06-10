@@ -1,25 +1,50 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+
+import { addToFavorite, removeFavorite } from "../utils/FirebaseUtils";
 
 import sprites from "../img/svg/sprites.svg";
 
 import useStyles from "../styles/components/AddToFavoriteButtonStyles";
 
-const AddToFavoriteButton = ({
-  productId,
-  isFavorite,
-  removeFromFavorite,
-  addToFavorite,
-}) => {
+const AddToFavoriteButton = (props) => {
+  const {
+    currentUserId,
+    productId,
+    isFavorite,
+    removeFromFavoriteList,
+    addToFavoriteList,
+    isSmall = false,
+  } = props;
   // Styles
-  const classes = useStyles();
+  const classes = useStyles({ isSmall });
 
   const handleFavorite = (event) => {
+    event.stopPropagation();
+
     if (isFavorite) {
-      removeFromFavorite(productId);
+      removeFromFavoriteList(productId);
     } else {
-      addToFavorite(productId);
+      addToFavoriteList(productId);
     }
   };
+
+  // TODO: Extract a custom hook from below code.
+  const ref = useRef(false);
+  useEffect(() => {
+    const updateFavoriteStatus = async () => {
+      if (ref.current) {
+        if (isFavorite) {
+          await addToFavorite(currentUserId, productId);
+        } else {
+          await removeFavorite(currentUserId, productId);
+        }
+      } else {
+        ref.current = true;
+      }
+    };
+
+    updateFavoriteStatus();
+  }, [isFavorite, currentUserId]);
 
   return (
     <svg className={classes.AddToFavoriteButton} onClick={handleFavorite}>
