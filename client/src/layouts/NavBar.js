@@ -53,7 +53,7 @@ const NavBar = ({ firebaseInitialized, currentUser, toggleFoldableMenu }) => {
           ) : (
             <div className={classes.NavBar_centered_container}>
               <p className={classes.NavBar_loading_text}>Initializing</p>
-              <LoadingSpinner />
+              <LoadingSpinner small={true} />
             </div>
           )}
         </div>

@@ -2,6 +2,7 @@ import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
   Account: {
+    // minWidth: "120rem",
     display: "grid",
     gridTemplateColumns: "max-content 1fr",
     // margin: "10rem 40rem",
@@ -15,9 +16,9 @@ export default createUseStyles({
 
   Account_details: {
     height: "95rem",
-    minWidth: "70rem",
+    minWidth: "80rem",
     // backgroundColor: "var(--color-primary-light)",
-    border: "1px solid var(--color-primary)",
+    // border: "1px solid var(--color-primary)",
     padding: "5rem",
   },
 
@@ -31,6 +32,12 @@ export default createUseStyles({
 
   Account_details_wishlist: {
     display: (props) => (props.activeItem === 2 ? "block" : "none"),
+  },
+
+  Wishlist: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "3rem",
   },
 
   button_input_field: {

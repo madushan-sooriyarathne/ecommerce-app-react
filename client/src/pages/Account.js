@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
+import { productListSelector } from "../redux/reducers/product-list/ProductListSelectors";
+
 import useListState from "../hooks/UseListState";
 import useToggleState from "../hooks/UseToggleState";
-import userInputState from "../hooks/UseInputState";
+import useInputState from "../hooks/UseInputState";
 
 import TabButton from "../components/TabButton";
 import FormField from "../components/FormField";
@@ -12,18 +14,18 @@ import ButtonStatic from "../components/buttons/ButtonStatic";
 import HeadingSecondary from "../components/headings/HeadingSecondary";
 import ButtonAnimated from "../components/buttons/ButtonAnimated";
 import CurrentUserBadge from "../components/CurrentUserBadge";
+import ProductListItem from "../components/ProductListItem";
 
 import AccountTabbedContainer from "../layouts/AccountTabbedContainer";
-import CenteredPage from "./CenteredPage";
+import Page from "./Page";
 
 import useStyles from "../styles/pages/AccountStyles";
+import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 
-const Account = ({ currentUser }) => {
+const Account = ({ currentUser, favoriteProductList, productList }) => {
   // State
   const [isDisabled, toggleIsDisabled] = useToggleState(true);
-  const [name, updateName, resetName] = userInputState(
-    currentUser ? currentUser.displayName : ""
-  );
+
   const [accountContent, toggleAccountContentItem] = useListState([
     {
       id: 0,
@@ -43,8 +45,49 @@ const Account = ({ currentUser }) => {
     },
   ]);
 
-  // set default active pane according to the URL query parameter
-  // toggleAccountContentItem(pane && pane < 3 ? pane : 0);
+  // Input Field states
+  const [name, updateName, resetName] = useInputState(
+    currentUser ? currentUser.displayName : ""
+  );
+  const [phone, updatePhone, resetPhone] = useInputState(
+    currentUser ? currentUser.phone : ""
+  );
+
+  const [country, updateCountry, resetCountry] = useInputState(
+    currentUser ? currentUser.address.country : ""
+  );
+
+  const [
+    addressLineOne,
+    updateAddressLineOne,
+    resetAddressLineOne,
+  ] = useInputState(currentUser ? currentUser.address.addressLineOne : "");
+
+  const [
+    addressLineTwo,
+    updateAddressLineTwo,
+    resetAddressLineTwo,
+  ] = useInputState(currentUser ? currentUser.address.addressLineTwo : "");
+
+  const [city, updateCity, resetCity] = useInputState(
+    currentUser ? currentUser.address.city : ""
+  );
+
+  const [postalCode, updatePostalCode, resetPostalCode] = useInputState(
+    currentUser ? currentUser.address.postalCode : ""
+  );
+
+  // filter the products and get the favorite products
+  let favoriteProducts = [];
+
+  favoriteProductList.forEach((productId) => {
+    for (let product of productList) {
+      if (product.id === productId) {
+        favoriteProducts.push(product);
+        return;
+      }
+    }
+  });
 
   const activeId = accountContent.filter((item) => item.isActive)[0].id;
 
@@ -61,7 +104,7 @@ const Account = ({ currentUser }) => {
   };
 
   return (
-    <CenteredPage>
+    <Page>
       <div className={classes.Account}>
         <div className={classes.Account_navigation}>
           <CurrentUserBadge
@@ -181,6 +224,8 @@ const Account = ({ currentUser }) => {
                   id="PhoneNumberField"
                   label="Phone Number"
                   type="tel"
+                  value={phone}
+                  onChange={updatePhone}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -188,7 +233,9 @@ const Account = ({ currentUser }) => {
                 <FormField
                   id="CountryField"
                   label="Country"
-                  type="LastName"
+                  type="text"
+                  value={country}
+                  onChange={updateCountry}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -196,6 +243,8 @@ const Account = ({ currentUser }) => {
                   id="AddressLineOneField"
                   label="Address Line 1"
                   type="text"
+                  value={addressLineOne}
+                  onChange={updateAddressLineOne}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -203,13 +252,16 @@ const Account = ({ currentUser }) => {
                   id="AddressLineTwoField"
                   label="Address Line 2"
                   type="text"
-                  isRequired={true}
+                  value={addressLineTwo}
+                  onChange={updateAddressLineTwo}
                   isDisabled={isDisabled}
                 />
                 <FormField
                   id="CityField"
                   label="City"
                   type="text"
+                  value={city}
+                  onChange={updateCity}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -217,6 +269,8 @@ const Account = ({ currentUser }) => {
                   id="PostalCodeField"
                   label="Postal Code"
                   type="LastName"
+                  value={postalCode}
+                  onChange={updatePostalCode}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -237,20 +291,28 @@ const Account = ({ currentUser }) => {
           <AccountTabbedContainer
             id={classes.Account_details_wishlist}
             title="Wish List"
-          ></AccountTabbedContainer>
+          >
+            <div className={classes.Wishlist}>
+              {favoriteProducts.map((favProduct) => (
+                <ProductListItem product={favProduct} key={favProduct.id} />
+              ))}
+            </div>
+          </AccountTabbedContainer>
           <AccountTabbedContainer
             id={classes.Account_details_orderHistory}
             title="Order History"
           ></AccountTabbedContainer>
         </div>
       </div>
-    </CenteredPage>
+    </Page>
   );
 };
 
 //Redux Mappings
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
+  productList: productListSelector(state),
+  favoriteProductList: favoriteProductListSelector(state),
 });
 
 export default connect(mapStateToProps, null)(Account);

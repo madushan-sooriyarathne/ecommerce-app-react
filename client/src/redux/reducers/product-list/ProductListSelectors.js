@@ -20,30 +20,20 @@ const productByIdSelector = (productId) =>
     }
   });
 
-const getAvailableProducts = createSelector(
-  productListSelector,
-  (productList) =>
-    productList.filter((product) => {
-      const values = Object.values(product.availability);
-      let hasItems = false;
-
-      if (values.length < 1) {
-        return hasItems;
-      }
-
-      values.forEach((value) => {
-        if (!(value < 1)) {
-          hasItems = true;
-        }
-      });
-
-      return hasItems;
-    })
-);
+const getProductsByIds = (idList) => {
+  let filteredList = [];
+  idList.forEach((productId) => {
+    const product = productByIdSelector(productId);
+    if (product) {
+      filteredList.push(product);
+    }
+  });
+  return filteredList;
+};
 
 export {
   collectionSelector,
   productListSelector,
-  getAvailableProducts,
   productByIdSelector,
+  getProductsByIds,
 };
