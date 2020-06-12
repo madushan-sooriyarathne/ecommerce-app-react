@@ -46,18 +46,20 @@ const App = ({
   const classes = useStyles();
 
   useEffect(() => {
-    const unsubscribeToFirebase = auth.onAuthStateChanged(async (userAuth) => {
-      // On facebook and Google auth below method will store user object in the database
-      // on Email and password auth, since user is already stored in database below method will just return that stored entry
-      const user = await persistUser(userAuth);
-      setCurrentUser(user);
+    const unsubscribeToFirebaseAuth = auth.onAuthStateChanged(
+      async (userAuth) => {
+        // On facebook and Google auth below method will store user object in the database
+        // on Email and password auth, since user is already stored in database below method will just return that stored entry
+        const user = await persistUser(userAuth);
+        setCurrentUser(user);
 
-      // Update the favorite product list
-      updateFavorites(user.favorites);
+        // Update the favorite product list
+        updateFavorites(user.favorites);
 
-      //Set Firebase state
-      setInitialized();
-    });
+        //Set Firebase state
+        setInitialized();
+      }
+    );
 
     // Get products data
     const collectionRef = firestore.collection("products");
@@ -73,7 +75,7 @@ const App = ({
     );
 
     return () => {
-      unsubscribeToFirebase();
+      unsubscribeToFirebaseAuth();
       unsubscribeToSnapshot();
     };
   }, [setCurrentUser, setInitialized, addProduct, addListOfProducts]);

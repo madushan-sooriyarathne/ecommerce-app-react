@@ -38,6 +38,19 @@ export default createUseStyles({
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "3rem",
+    scrollY: "auto",
+  },
+
+  Order_History: {
+    display: "flex",
+    height: "70rem",
+    flexDirection: "column",
+    overflowY: "auto",
+    padding: "0.5rem",
+
+    "& > *:not(:last-child)": {
+      marginBottom: "2rem",
+    },
   },
 
   button_input_field: {
@@ -60,6 +73,10 @@ export default createUseStyles({
   Overview_form: {
     display: "flex",
     flexDirection: "column",
+
+    "& > *:not(:last-child)": {
+      marginBottom: "1rem",
+    },
   },
 
   Form_wrapper: {

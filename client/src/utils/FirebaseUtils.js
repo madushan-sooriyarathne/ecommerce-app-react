@@ -68,6 +68,7 @@ const persistUser = async (userAuth, additionalData) => {
         photoURL,
         providerId: userAuth.providerData[0].providerId,
         cart: [],
+        favorites: [],
         stripeCustomerId: null,
         ...additionalData,
       })
@@ -91,6 +92,7 @@ const updateCurrentUser = async (userId, updatedFields) => {
 
     if (userSnap.exists) {
       userRef.update(updatedFields);
+      console.log("User data updated");
     } else {
       console.error("User does not exists in the database");
     }

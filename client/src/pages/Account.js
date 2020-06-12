@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
+import { updateCurrentUser, firestore } from "../utils/FirebaseUtils";
+
 import { productListSelector } from "../redux/reducers/product-list/ProductListSelectors";
+import { updateUser } from "../redux/reducers/user/UserActions";
 
 import useListState from "../hooks/UseListState";
 import useToggleState from "../hooks/UseToggleState";
@@ -15,6 +18,7 @@ import HeadingSecondary from "../components/headings/HeadingSecondary";
 import ButtonAnimated from "../components/buttons/ButtonAnimated";
 import CurrentUserBadge from "../components/CurrentUserBadge";
 import ProductListItem from "../components/ProductListItem";
+import OrderListItem from "../components/OrderListItem";
 
 import AccountTabbedContainer from "../layouts/AccountTabbedContainer";
 import Page from "./Page";
@@ -22,9 +26,16 @@ import Page from "./Page";
 import useStyles from "../styles/pages/AccountStyles";
 import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 
-const Account = ({ currentUser, favoriteProductList, productList }) => {
+const Account = ({
+  currentUser,
+  favoriteProductList,
+  productList,
+  updateCurrentUserLocal,
+}) => {
   // State
   const [isDisabled, toggleIsDisabled] = useToggleState(true);
+  const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState([]);
 
   const [accountContent, toggleAccountContentItem] = useListState([
     {
@@ -46,11 +57,11 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
   ]);
 
   // Input Field states
-  const [name, updateName, resetName] = useInputState(
+  const [displayName, updateDisplayName] = useInputState(
     currentUser ? currentUser.displayName : ""
   );
-  const [phone, updatePhone, resetPhone] = useInputState(
-    currentUser ? currentUser.phone : ""
+  const [phoneNumber, updatePhoneNumber] = useInputState(
+    currentUser ? currentUser.phoneNumber : ""
   );
 
   const [country, updateCountry, resetCountry] = useInputState(
@@ -95,6 +106,8 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
     activeItem: activeId,
   });
 
+  // Event Handlers
+  // Event handler for tab buttons
   const handleSelect = (event) => {
     const el = event.target.closest(".tab-btn");
     if (el) {
@@ -102,6 +115,56 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
       toggleAccountContentItem(id);
     }
   };
+
+  // Submit Event handler for user info form submit
+  const handleFormSubmit = async (event) => {
+    // Start button loading animation
+    setLoading(true);
+
+    event.preventDefault();
+
+    const data = {
+      address: {
+        country,
+        addressLineOne,
+        addressLineTwo,
+        city,
+        postalCode,
+      },
+      displayName,
+      phoneNumber,
+    };
+
+    // update the user record in firebase
+    await updateCurrentUser(currentUser.uid, data);
+
+    // update the user record in local redux state
+    // NOTE: Maybe there is a good way to do it. But at the moment this is the best i know.
+    updateCurrentUserLocal(data);
+
+    // Stop loading animation of the button
+    setLoading(false);
+
+    // Disable the form
+    toggleIsDisabled();
+  };
+
+  useEffect(() => {
+    const getOrderData = async () => {
+      console.log("Im updated");
+      const orderCollectionRef = firestore
+        .collection("orders")
+        .where("userId", "==", currentUser.uid);
+      try {
+        const orderCollectionSnap = await orderCollectionRef.get();
+        setOrders(orderCollectionSnap.docs.map((doc) => doc.data()));
+      } catch (error) {
+        console.error("Error fetching orders");
+      }
+    };
+
+    getOrderData();
+  }, [currentUser.uid]);
 
   return (
     <Page>
@@ -209,14 +272,17 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
                 </ButtonAnimated>
               </div>
 
-              <form className={classes.Overview_form}>
+              <form
+                className={classes.Overview_form}
+                onSubmit={handleFormSubmit}
+              >
                 <FormField
-                  id="FirstNameField"
-                  label="First Name"
+                  id="NameField"
+                  label="Name"
                   type="text"
                   isRequired={true}
-                  value={name}
-                  onChange={updateName}
+                  value={displayName}
+                  onChange={updateDisplayName}
                   isDisabled={isDisabled}
                 />
 
@@ -224,8 +290,8 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
                   id="PhoneNumberField"
                   label="Phone Number"
                   type="tel"
-                  value={phone}
-                  onChange={updatePhone}
+                  value={phoneNumber}
+                  onChange={updatePhoneNumber}
                   isRequired={true}
                   isDisabled={isDisabled}
                 />
@@ -252,6 +318,7 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
                   id="AddressLineTwoField"
                   label="Address Line 2"
                   type="text"
+                  isRequired={false}
                   value={addressLineTwo}
                   onChange={updateAddressLineTwo}
                   isDisabled={isDisabled}
@@ -281,6 +348,7 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
                     type="submit"
                     isSmall={true}
                     styles={{ marginTop: "1rem", alignSelf: "stretch  " }}
+                    loading={loading}
                   >
                     Update Account Details
                   </ButtonStatic>
@@ -301,7 +369,24 @@ const Account = ({ currentUser, favoriteProductList, productList }) => {
           <AccountTabbedContainer
             id={classes.Account_details_orderHistory}
             title="Order History"
-          ></AccountTabbedContainer>
+          >
+            <div className={classes.Order_History}>
+              {orders.map((order) => {
+                const amount = order.products.reduce(
+                  (acc, cur) => acc + cur.price * cur.qtc,
+                  0
+                );
+
+                return (
+                  <OrderListItem
+                    orderId={order.orderNumber}
+                    amount={amount}
+                    receiptUrl={order.receiptUrl}
+                  />
+                );
+              })}
+            </div>
+          </AccountTabbedContainer>
         </div>
       </div>
     </Page>
@@ -315,4 +400,9 @@ const mapStateToProps = (state) => ({
   favoriteProductList: favoriteProductListSelector(state),
 });
 
-export default connect(mapStateToProps, null)(Account);
+const mapDispatchToProps = (dispatch) => ({
+  updateCurrentUserLocal: (updatedFields) =>
+    dispatch(updateUser(updatedFields)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Account);
