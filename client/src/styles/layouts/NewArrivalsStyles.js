@@ -4,6 +4,11 @@ export default createUseStyles({
   NewArrivals: {
     gridColumn: "mid-start / mid-end",
     marginTop: "5rem",
+    minHeight: "60rem",
+
+    display: "grid",
+    gridTemplateRows: "max-content 1fr",
+    gap: "3rem",
   },
 
   Header: {
@@ -41,5 +46,34 @@ export default createUseStyles({
 
   filterBtn_selected: {
     backgroundColor: "var(--color-primary-light)",
+  },
+
+  NewArrivals_content: {
+    width: "100%",
+    height: "100%",
+  },
+
+  Empty: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  Empty_img: {
+    width: "30rem",
+    height: "30rem",
+    marginBottom: "3rem",
+  },
+
+  Loading: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
 });

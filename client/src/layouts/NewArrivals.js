@@ -6,10 +6,13 @@ import useListState from "../hooks/UseListState";
 import CollectionContainer from "./CollectionContainer";
 import ProductListItem from "../components/ProductListItem";
 import HeadingPrimary from "../components/headings/HeadingPrimary";
-
+import HeadingPrimarySlim from "../components/headings/HeadingPrimarySlim";
 import useStyles from "../styles/layouts/NewArrivalsStyles";
+import BoxSpinner from "../components/loading-animations/BoxSpinner";
 
-const NewArrivals = ({ productList }) => {
+import empty from "../img/svg/cart-empty.svg";
+
+const NewArrivals = ({ productList, firebaseInitialized }) => {
   const classes = useStyles();
 
   const [selectors, toggleSelector] = useListState([
@@ -18,6 +21,12 @@ const NewArrivals = ({ productList }) => {
     { name: "Women", id: "women", isActive: false },
     { name: "Sport", id: "sport", isActive: false },
   ]);
+
+  const filteredList = productList.filter(
+    (product) =>
+      product.category ===
+      selectors.filter((selector) => selector.isActive)[0].id
+  );
 
   const handleSelect = (event) => {
     const el = event.target.closest(".filter-btn");
@@ -50,21 +59,52 @@ const NewArrivals = ({ productList }) => {
           ))}
         </div>
       </div>
-      <CollectionContainer>
-        {selectors.filter((selector) => selector.isActive)[0].id === "all"
-          ? productList.map((product) => (
-              <ProductListItem product={product} key={product.id} />
-            ))
-          : productList
-              .filter(
-                (product) =>
-                  product.category ===
-                  selectors.filter((selector) => selector.isActive)[0].id
-              )
-              .map((product) => (
+      <div className={classes.NewArrivals_content}>
+        {firebaseInitialized ? (
+          selectors.filter((selector) => selector.isActive)[0].id === "all" ? (
+            productList.length < 1 ? (
+              <div className={classes.Empty}>
+                <img
+                  className={classes.Empty_img}
+                  src={empty}
+                  alt="No Products"
+                ></img>{" "}
+                <HeadingPrimarySlim styles={{ color: "var(--color-error)" }}>
+                  Sorry! We ran out of products in this category.
+                </HeadingPrimarySlim>
+              </div>
+            ) : (
+              <CollectionContainer>
+                {productList.map((product) => (
+                  <ProductListItem product={product} key={product.id} />
+                ))}
+              </CollectionContainer>
+            )
+          ) : filteredList.length < 1 ? (
+            <div className={classes.Empty}>
+              <img
+                className={classes.Empty_img}
+                src={empty}
+                alt="No Products"
+              ></img>{" "}
+              <HeadingPrimarySlim styles={{ color: "var(--color-error)" }}>
+                Sorry! We ran out of products in this category.
+              </HeadingPrimarySlim>
+            </div>
+          ) : (
+            <CollectionContainer>
+              {filteredList.map((product) => (
                 <ProductListItem product={product} key={product.id} />
               ))}
-      </CollectionContainer>
+            </CollectionContainer>
+          )
+        ) : (
+          <div className={classes.Loading}>
+            <BoxSpinner />
+            <HeadingPrimarySlim>Loading...</HeadingPrimarySlim>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -72,6 +112,7 @@ const NewArrivals = ({ productList }) => {
 //Redux Mappings
 const mapStateToProps = (state) => ({
   productList: state.productList.productList,
+  firebaseInitialized: state.firebase.initialized,
 });
 
 export default connect(mapStateToProps, null)(NewArrivals);

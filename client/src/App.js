@@ -170,7 +170,17 @@ const App = ({
         <Route exact path="/cart" render={() => <Cart />} />
 
         {/* // Collection Route */}
-        <Route exact path="/collection/:collectionId" component={Category} />
+        <Route
+          exact
+          path="/collection/:collectionId"
+          render={({ match }) =>
+            firebaseInitialized ? (
+              <Category match={match} />
+            ) : (
+              <Redirect to="/" />
+            )
+          }
+        />
 
         {/* // Payment Done Router ==> Protected Route */}
         <Route

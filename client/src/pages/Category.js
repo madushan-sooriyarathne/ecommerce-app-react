@@ -7,27 +7,21 @@ import CollectionContainer from "../layouts/CollectionContainer";
 import ProductListItem from "../components/ProductListItem";
 
 import useStyles from "../styles/pages/CategoryStyles";
+import Page from "./Page";
 
 const Category = ({ productList }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.Category}>
-      <CollectionContainer styles={{ gridColumn: "start / end" }}>
-        {productList.map((product) => (
-          <ProductListItem
-            name={product.name}
-            category={product.category}
-            price={parseFloat(product.price)}
-            ratings={product.ratings}
-            img={product.imgURL}
-            isAvailable={product.availability}
-            isFavorite={true}
-            id={product.id}
-          />
-        ))}
-      </CollectionContainer>
-    </div>
+    <Page>
+      <div className={classes.Category}>
+        <CollectionContainer styles={{ gridColumn: "start / end" }}>
+          {productList.map((product) => (
+            <ProductListItem product={product} key={product.id} />
+          ))}
+        </CollectionContainer>
+      </div>
+    </Page>
   );
 };
 
