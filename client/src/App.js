@@ -54,7 +54,9 @@ const App = ({
         setCurrentUser(user);
 
         // Update the favorite product list
-        updateFavorites(user.favorites);
+        if (user) {
+          updateFavorites(user.favorites);
+        }
 
         //Set Firebase state
         setInitialized();

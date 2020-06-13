@@ -58,24 +58,7 @@ export default createUseStyles({
     gridTemplateColumns: "1fr min-content",
     alignItems: "end",
   },
-  search: {
-    display: "grid",
-    gridTemplateColumns: "30rem min-content 1fr",
-  },
-  Search_field: {
-    width: "100%",
-    fontSize: "1.4rem",
-    padding: "1rem",
-    border: "2px solid #3c2858",
-    backgroundColor: "transparent",
-    color: "#3c2858",
-  },
-  Search_btn: {
-    width: "4rem",
-    height: "4rem",
-    fill: "#fff",
-    backgroundColor: "#3c2858",
-  },
+
   NavBar_logo: {
     justifySelf: "center",
 

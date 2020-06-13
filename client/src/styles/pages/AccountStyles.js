@@ -23,7 +23,7 @@ export default createUseStyles({
   },
 
   Account_details_overview: {
-    display: (props) => (props.activeItem === 0 ? "block" : "none"),
+    display: (props) => (props.activeItem === 0 ? "flex" : "none"),
   },
 
   Account_details_orderHistory: {
@@ -65,6 +65,9 @@ export default createUseStyles({
   },
 
   content_wrapper: {
+    display: "flex",
+    flexDirection: "column",
+
     "& > *:first-child": {
       marginBottom: "1rem",
     },

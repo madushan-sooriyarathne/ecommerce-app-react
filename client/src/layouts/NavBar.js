@@ -15,10 +15,12 @@ import useStyles from "../styles/layouts/NavBarStyles";
 
 import sprites from "../img/svg/sprites.svg";
 import CartDropDownMenu from "../components/CartDropDownMenu";
+import SearchBar from "../components/SarchBar";
 
 const NavBar = ({ firebaseInitialized, currentUser, toggleFoldableMenu }) => {
   //Styles
   const classes = useStyles();
+
   return (
     <div className={classes.NavBar}>
       <FoldableSideMenu>
@@ -103,17 +105,7 @@ const NavBar = ({ firebaseInitialized, currentUser, toggleFoldableMenu }) => {
       </div>
       <div className={classes.NavBar_search_and_cart}>
         <CartDropDownMenu />
-        <div className={classes.search}>
-          <input
-            className={classes.Search_field}
-            type="text"
-            placeholder="Search"
-            autoComplete="off"
-          ></input>
-          <svg className={classes.Search_btn}>
-            <use xlinkHref={`${sprites}#icon-search`}></use>
-          </svg>
-        </div>
+        <SearchBar />
       </div>
     </div>
   );

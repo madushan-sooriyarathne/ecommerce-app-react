@@ -4,7 +4,6 @@ export default createUseStyles({
   AccountTabbedContainer: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
 
     "& > *:first-child": {
       marginBottom: "1rem",
@@ -22,8 +21,13 @@ export default createUseStyles({
   },
 
   Content: {
+    alignSelf: "flex-start",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+
     "& > *": {
-      marginBottom: "2rem",
+      marginBottom: "4rem",
     },
   },
 });

@@ -19,6 +19,7 @@ import ButtonAnimated from "../components/buttons/ButtonAnimated";
 import CurrentUserBadge from "../components/CurrentUserBadge";
 import ProductListItem from "../components/ProductListItem";
 import OrderListItem from "../components/OrderListItem";
+import AuthProviderBadge from "../components/AuthProviderBadge";
 
 import AccountTabbedContainer from "../layouts/AccountTabbedContainer";
 import Page from "./Page";
@@ -250,7 +251,7 @@ const Account = ({
                   </div>
                 </>
               ) : (
-                <div>Signed in via {currentUser.providerId}</div>
+                <AuthProviderBadge providerId={currentUser.providerId} />
               )}
             </div>
             <div className={classes.content_wrapper}>
@@ -346,7 +347,7 @@ const Account = ({
                     primaryColor="var(--color-primary)"
                     secondaryColor="var(--color-white)"
                     type="submit"
-                    isSmall={true}
+                    isSmall={false}
                     styles={{ marginTop: "1rem", alignSelf: "stretch  " }}
                     loading={loading}
                   >
