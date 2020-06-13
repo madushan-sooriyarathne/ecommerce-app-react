@@ -22,24 +22,30 @@ const SearchBar = ({ productList }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [searchResultActive, toggleSearchResultActive] = useState(false);
 
+  // Handle the search bar submit event
   const handleSearch = (event) => {
     event.preventDefault();
 
-    setSearchResult(
-      productList.filter((product) =>
-        product.name.toLowerCase().includes(searchFieldText)
-      )
-    );
+    if (searchFieldText !== "") {
+      setSearchResult(
+        productList.filter((product) =>
+          product.name.toLowerCase().includes(searchFieldText)
+        )
+      );
 
-    // toggle search results area
-    toggleSearchResultActive(true);
+      // toggle search results area
+      toggleSearchResultActive(true);
+    }
   };
 
+  // Close the search result area and reset search field when
+  // user click on a search result item
   const handleSearchItemClick = () => {
     toggleSearchResultActive(false);
     resetSearchFieldText();
   };
 
+  // Close the search result area when user click outside of the component
   const handleSearchClose = () => {
     //close the overlay and search result tray
     toggleSearchResultActive(false);
