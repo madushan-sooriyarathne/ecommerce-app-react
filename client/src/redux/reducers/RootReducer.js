@@ -7,6 +7,7 @@ import FoldableMenuReducer from "./foldable-menu/FoldableMenuReducer";
 import ProductListReducer from "./product-list/ProductListReducer";
 import FavoriteProductListReducer from "./favorite-product-list/FavoriteProductListReducer";
 import UserReducer from "./user/UserReducer";
+import NotificationsReducer from "./notification/NotificationsReducer";
 
 export default combineReducers({
   cartList: CartListReducer,
@@ -16,4 +17,5 @@ export default combineReducers({
   productList: ProductListReducer,
   user: UserReducer,
   favoriteProductList: FavoriteProductListReducer,
+  notifications: NotificationsReducer,
 });
