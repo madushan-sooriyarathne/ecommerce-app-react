@@ -38,6 +38,7 @@ const Order = ({ currentUser }) => {
   const currentPageUrl = new URL(document.location.href);
   const fromPayment = currentPageUrl.searchParams.get("payment");
 
+  let subTotal = 0;
   const [order, setOrder] = useState(null);
 
   // when component get mounted, load the order data from firebase
@@ -49,14 +50,21 @@ const Order = ({ currentUser }) => {
     const unsubscribeToOrder = productCollectionRef.onSnapshot(
       (collectionSnapShot) => {
         setOrder(
-          collectionSnapShot.docs.filter(
-            (doc) => doc.id === match.params.order_id
-          )
+          collectionSnapShot.docs
+            .filter((doc) => doc.id === match.params.order_id)[0]
+            .data()
         );
       }
     );
     return () => unsubscribeToOrder();
-  }, [match.params.order_id, currentUser.uid, order]);
+  }, [match.params.order_id, currentUser.uid]);
+
+  if (order) {
+    subTotal = order.products.reduce(
+      (acc, cur) => acc + cur.price * cur.qtc,
+      0
+    );
+  }
 
   return (
     <Page>
@@ -93,9 +101,30 @@ const Order = ({ currentUser }) => {
                 </p>
               </div>
               <div className={classes.OrderSummery_itemList}>
-                {order[0].data().products.map((product) => (
+                {order.products.map((product) => (
                   <CartItem isPurchased={true} item={product} />
                 ))}
+              </div>
+              <div className={classes.OrderSummery_details}>
+                <div className={classes.Details_row}>
+                  <p className={classes.Row_title}>Discount</p>
+                  <p className={classes.Row_value}>{order.discount} %</p>
+                </div>
+                <div className={classes.Details_row}>
+                  <p className={classes.Row_title}>Shipping</p>
+                  <p className={classes.Row_value}>$ {order.shipping.cost}</p>
+                </div>
+                <div className={classes.Details_row}>
+                  <p className={`${classes.Row_title} ${classes.Title_bold}`}>
+                    Total
+                  </p>
+                  <p className={`${classes.Row_value} ${classes.Value_bold}`}>
+                    ${" "}
+                    {subTotal +
+                      order.shipping.cost -
+                      subTotal * (order.discount / 100)}
+                  </p>
+                </div>
               </div>
               <div className={classes.OrderSummery_buttonSet}>
                 <ButtonAnimated

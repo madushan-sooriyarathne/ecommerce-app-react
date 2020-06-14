@@ -381,7 +381,11 @@ const Account = ({
                 return (
                   <OrderListItem
                     orderId={order.orderNumber}
-                    amount={amount}
+                    amount={
+                      amount +
+                      order.shipping.cost -
+                      amount * (order.discount / 100)
+                    }
                     receiptUrl={order.receiptUrl}
                   />
                 );
