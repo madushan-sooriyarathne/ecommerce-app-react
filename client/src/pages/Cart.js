@@ -31,7 +31,6 @@ const Cart = (props) => {
   // Default Props for subTotal and shipping (Shipping is not prone to change in this component)
   const {
     subTotal = cartList.reduce((acc, item) => item.price * item.qtc + acc, 0),
-    shipping = 10,
   } = props;
 
   //event handler functions
@@ -99,17 +98,9 @@ const Cart = (props) => {
                 2
               )}`}</p>
             </div>
-            <div className={classes.Details_row} style={{ color: "red" }}>
-              <p className={classes.Details_heading}>Shipping</p>
-              <p className={classes.Details_value}>{`$ ${shipping.toFixed(
-                2
-              )}`}</p>
-            </div>
             <div className={classes.Details_row}>
               <p></p>
-              <p className={classes.Details_total}>{`$ ${(
-                subTotal + shipping
-              ).toFixed(2)}`}</p>
+              <p className={classes.Details_total}>{`$ ${subTotal}`}</p>
             </div>
           </div>
           <ButtonStatic
