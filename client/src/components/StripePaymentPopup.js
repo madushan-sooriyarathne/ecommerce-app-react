@@ -14,7 +14,13 @@ import { useHistory } from "react-router-dom";
 // Load stripe as a promise
 const stripePromise = loadStripe("pk_test_ATPJil7rjAI6NefMCT1Cr10100QtHkMk19");
 
-const StripePaymentPopup = ({ customerDetails, popupOpen, closePopup }) => {
+const StripePaymentPopup = ({
+  discount,
+  shipping,
+  customerDetails,
+  popupOpen,
+  closePopup,
+}) => {
   //Styles
   const classes = useStyles();
 
@@ -54,6 +60,8 @@ const StripePaymentPopup = ({ customerDetails, popupOpen, closePopup }) => {
         </svg>
         <Elements stripe={stripePromise}>
           <StripeCheckoutForm
+            discount={discount}
+            shipping={shipping}
             customerDetails={customerDetails}
             closeAndRedirect={closeAndRedirect}
           />

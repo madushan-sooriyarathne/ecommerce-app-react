@@ -73,4 +73,54 @@ export default createUseStyles({
     gridTemplateColumns: "1fr min-content",
     gap: "1rem",
   },
+
+  Summery_shipping: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  Shipping_title: {
+    fontSize: "1.5rem",
+    fontWeight: "500",
+    marginBottom: "1rem",
+  },
+
+  Shipping_badge_array: {
+    display: "flex",
+    alignItems: "center",
+
+    "& > *:not(:last-child)": {
+      marginRight: "1rem",
+    },
+  },
+  Shipping_badge: {
+    padding: "1rem",
+    display: "grid",
+    gridTemplateColumns: "min-content 1fr",
+    gap: "2rem",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "3px",
+    border: "2px solid var(--color-primary)",
+    backgroundColor: "var(--color-primary)",
+
+    marginBottom: "3rem",
+  },
+
+  Shipping_badge_active: {
+    transition: "transform 0.2 ease-in-out",
+    border: "2px solid var(--color-danger)",
+    transform: "scale(1.1)",
+  },
+
+  Badge_img: {
+    width: "5rem",
+  },
+  Badge_amount: {
+    fontSize: "1.7rem",
+    fontWeight: "500",
+    display: "flex",
+    alignItems: "center",
+    color: "var(--color-white)",
+  },
 });

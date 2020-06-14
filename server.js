@@ -67,6 +67,7 @@ app.get("/", (req, res) => {
 
 app.post("/payment", async (req, res) => {
   let customerId = "";
+  console.log(req.body);
 
   // if customer already in stripe db, use that ref to make the charge
   if (req.body.customerDetails.stripeCustomerId) {

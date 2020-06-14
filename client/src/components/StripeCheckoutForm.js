@@ -49,6 +49,8 @@ const useOptions = () => {
 const StripeCheckoutForm = ({
   currentUserId,
   amount,
+  shipping,
+  discount,
   currentCartList,
   clearCartMenu,
   customerDetails,
@@ -61,6 +63,10 @@ const StripeCheckoutForm = ({
 
   //Styles
   const classes = useStyles();
+
+  // final amount
+  const finalAmount =
+    (amount + shipping.cost - amount * (discount / 100)).toFixed(2) * 100;
 
   const handleSubmit = async (event) => {
     let orderSaveStatus = {};
@@ -92,7 +98,7 @@ const StripeCheckoutForm = ({
       );
 
       if (token.error) {
-        console.log("Error creating token");
+        console.error("Error creating token");
       } else {
         // TODO: move whole payment part to the backend.
         // Send the products and quantities to the back end process the payment amount in the back end
@@ -108,8 +114,8 @@ const StripeCheckoutForm = ({
             "Content-type": "application/json",
           },
           body: JSON.stringify({
+            amount: finalAmount,
             token,
-            amount,
             customerDetails,
           }),
         });
@@ -118,12 +124,13 @@ const StripeCheckoutForm = ({
 
         // If payment is succeeded, save the order data to database
         if (
-          paymentData.amount === amount &&
+          paymentData.amount === finalAmount &&
           paymentData.status === "succeeded"
         ) {
           const orderData = {
             products: currentCartList,
             userId: currentUserId,
+            discount: discount,
             billing_address: paymentData.billing_details.address,
             order_state: 0,
             phone: paymentData.metadata.phone,
@@ -132,11 +139,11 @@ const StripeCheckoutForm = ({
             shipDate: null,
             orderEmail: paymentData.receipt_email,
             receiptUrl: paymentData.receipt_url,
+            shipping: shipping,
             carrier: {
-              name: "FedEx",
+              name: shipping.name,
               carrier_tracking_number: "000100203",
-              url:
-                "https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=",
+              url: `${shipping.url}000100203`,
             },
           };
 
@@ -190,7 +197,7 @@ const StripeCheckoutForm = ({
           <CardCvcElement options={options} />
         </div>
         <ButtonStatic type="submit" disabled={!stripe} loading={loading}>
-          Pay $ {amount / 100}
+          Pay $ {finalAmount / 100}
         </ButtonStatic>
       </form>
     </div>
@@ -199,7 +206,7 @@ const StripeCheckoutForm = ({
 
 const mapStateToProps = (state) => ({
   currentUserId: getCurrentUserId(state),
-  amount: subTotalSelector(state) * 100,
+  amount: subTotalSelector(state),
   currentCartList: cartListItemsSelector(state),
 });
 

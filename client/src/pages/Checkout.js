@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { connect } from "react-redux";
 
 import useInputState from "../hooks/UseInputState";
+import useListState from "../hooks/UseListState";
 
 import FormField from "../components/FormField";
 import ButtonAnimated from "../components/buttons/ButtonAnimated";
@@ -13,6 +14,8 @@ import useStyles from "../styles/pages/CheckoutStyles";
 import { subTotalSelector } from "../redux/reducers/cart-list/CartListSelectors";
 import StripePaymentPopup from "../components/StripePaymentPopup";
 import ButtonStatic from "../components/buttons/ButtonStatic";
+import { firestore } from "../utils/FirebaseUtils";
+import { app } from "firebase";
 
 const Checkout = ({ subTotal, currentUser }) => {
   const classes = useStyles();
@@ -25,8 +28,25 @@ const Checkout = ({ subTotal, currentUser }) => {
   const [discount, setDiscount] = useState(0);
   const [popupOpen, setPopupOpen] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({});
-
-  const total = (subTotal + shipping - subTotal * (discount / 100)).toFixed(2);
+  const [shippingPartners, toggleShippingPartners] = useListState([
+    {
+      name: "FedEx",
+      id: "fedex",
+      logo: "https://www.fedex.com/content/dam/fedex-com/logos/logo.png",
+      url:
+        "https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=",
+      cost: 10,
+      isActive: true,
+    },
+    {
+      name: "DHL",
+      id: "dhl",
+      logo: "https://www.dhl.com/img/meta/dhl_logo.gif",
+      cost: 20,
+      url: "https://www.dhl.com/en/express/tracking.html?AWB=",
+      isActive: false,
+    },
+  ]);
 
   //Form field states
   const [fullName, updateFullName, resetFullName] = useInputState(
@@ -89,6 +109,10 @@ const Checkout = ({ subTotal, currentUser }) => {
     resetShippingPostalCode,
   ] = useInputState(currentUser.address.postalCode || "");
 
+  // Coupon code field status
+  const [couponCode, updateCouponCode, resetCouponCode] = useInputState("");
+
+  // handle checkout button click event
   const handleFormSubmit = () => {
     console.log(formRef);
     // formRef.current.submit();
@@ -122,24 +146,68 @@ const Checkout = ({ subTotal, currentUser }) => {
     }
 
     // Clear the field
-    resetFullName();
-    resetPhoneNumber();
-    resetEmail();
-    resetBillingCountry();
-    resetBillingAddressLineOne();
-    resetBillingAddressLineTwo();
-    resetBillingCity();
-    resetBillingPostalCode();
-    resetShippingCountry();
-    resetShippingAddressLineOne();
-    resetShippingAddressLineTwo();
-    resetShippingCity();
-    resetShippingPostalCode();
+    // resetFullName();
+    // resetPhoneNumber();
+    // resetEmail();
+    // resetBillingCountry();
+    // resetBillingAddressLineOne();
+    // resetBillingAddressLineTwo();
+    // resetBillingCity();
+    // resetBillingPostalCode();
+    // resetShippingCountry();
+    // resetShippingAddressLineOne();
+    // resetShippingAddressLineTwo();
+    // resetShippingCity();
+    // resetShippingPostalCode();
   };
 
+  // Handle shipping partner select
+  const handleShippingSelect = (event) => {
+    const el = event.target.closest(".shipping-partner");
+    if (el) {
+      toggleShippingPartners(el.dataset.id);
+    }
+  };
+
+  // close the credit card popup
   const closePopup = () => {
     setPopupOpen(false);
   };
+
+  // handle coupon code apply event
+  const applyCoupon = async (event) => {
+    // stop default form behavior
+    event.preventDefault();
+
+    if (couponCode === "") return;
+
+    // get the discount percentage from firebase
+    const couponCollectionRef = firestore.collection("coupons");
+
+    try {
+      const couponCollectionQuery = couponCollectionRef.where(
+        "couponCode",
+        "==",
+        couponCode.toLowerCase()
+      );
+
+      const couponCollectionSnap = await couponCollectionQuery.get();
+
+      const coupon = couponCollectionSnap.docs[0].data();
+
+      if (coupon) {
+        console.log(coupon);
+        setDiscount(coupon.discount);
+      } else {
+        setDiscount(0);
+      }
+    } catch (error) {
+      console.error(
+        `Error getting the coupon code data from the server : ${error.message}`
+      );
+    }
+  };
+
   return (
     <div className={classes.Checkout}>
       <HeadingPrimary styles={{ marginBottom: "4rem" }}>
@@ -283,24 +351,30 @@ const Checkout = ({ subTotal, currentUser }) => {
 
             <tr className={classes.Summery_table_const}>
               <th className={classes.row_heading}>Shipping</th>
-              <th className={classes.row_amount}>{`$ ${shipping.toFixed(
-                2
-              )}`}</th>
+              <th className={classes.row_amount}>{`$ ${shippingPartners
+                .filter((item) => item.isActive)[0]
+                .cost.toFixed(2)}`}</th>
             </tr>
 
             <tr className={classes.Summery_table_const}>
               <th className={classes.row_heading}>Total</th>
               <th className={classes.row_amount} style={{ fontWeight: 500 }}>
-                {`$ ${total}`}
+                {`$ ${(
+                  subTotal +
+                  shippingPartners.filter((item) => item.isActive)[0].cost -
+                  subTotal * (discount / 100)
+                ).toFixed(2)}`}
               </th>
             </tr>
           </table>
-          <form className={classes.Summery_couponForm}>
+          <form className={classes.Summery_couponForm} onSubmit={applyCoupon}>
             <FormField
               id="couponCode"
               label="Coupon Code"
               isRequired={true}
               withLabel={false}
+              value={couponCode}
+              onChange={updateCouponCode}
             />
             <ButtonAnimated
               primaryColor="var(--color-primary)"
@@ -311,18 +385,49 @@ const Checkout = ({ subTotal, currentUser }) => {
               Apply
             </ButtonAnimated>
           </form>
+
+          <div className={classes.Summery_shipping}>
+            <p className={classes.Shipping_title}>
+              Select a available shipping method
+            </p>
+            <div className={classes.Shipping_badge_array}>
+              {shippingPartners.map((partner) => (
+                <div
+                  className={`shipping-partner ${classes.Shipping_badge} ${
+                    partner.isActive && classes.Shipping_badge_active
+                  }`}
+                  data-id={partner.id}
+                  onClick={handleShippingSelect}
+                >
+                  <img
+                    className={classes.Badge_img}
+                    src={partner.logo}
+                    alt={partner.name}
+                  ></img>
+                  <p className={classes.Badge_amount}>$ {partner.cost}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <ButtonStatic
             primaryColor="var(--color-primary)"
             isSmall={true}
             styles={{ width: "100%" }}
             onClick={handleFormSubmit}
           >
-            Pay $ {total}
+            Pay ${" "}
+            {(
+              subTotal +
+              shippingPartners.filter((item) => item.isActive)[0].cost -
+              subTotal * (discount / 100)
+            ).toFixed(2)}
           </ButtonStatic>
         </div>
       </div>
       <StripePaymentPopup
-        amount={total}
+        discount={discount}
+        shipping={shippingPartners.filter((item) => item.isActive)[0]}
         customerDetails={customerDetails}
         popupOpen={popupOpen}
         closePopup={closePopup}
