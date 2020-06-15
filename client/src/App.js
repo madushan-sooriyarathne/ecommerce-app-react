@@ -32,6 +32,7 @@ import Footer from "./layouts/Footer";
 
 import useStyles from "./styles/AppStyles";
 import ProductPage from "./pages/ProductPage";
+import SnackBar from "./components/SnackBar";
 
 const App = ({
   currentUser,
@@ -197,6 +198,7 @@ const App = ({
         />
       </Switch>
       <Footer />
+      <SnackBar />
     </div>
   );
 };

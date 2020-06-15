@@ -3,16 +3,20 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import { addCartItem } from "../redux/reducers/cart-list/CartListActions";
-
-import AddToFavoriteButton from "../components/AddToFavoriteButton";
-import ButtonAnimated from "./buttons/ButtonAnimated";
-
-import { checkFavoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 import {
   addToFavorite,
   removeFromFavorite,
 } from "../redux/reducers/favorite-product-list/FavoriteProductListActions";
 import { getCurrentUserId } from "../redux/reducers/user/UserSelectors";
+
+import AddToFavoriteButton from "../components/AddToFavoriteButton";
+import ButtonAnimated from "./buttons/ButtonAnimated";
+
+import { checkFavoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 
 import useStyles from "../styles/components/ProductListItemStyles";
 
@@ -23,6 +27,8 @@ const ProductListItem = ({
   addItemToCart,
   addToFavoriteList,
   removeFromFavoriteList,
+  showNotification,
+  removeNotification,
 }) => {
   // History hook
   const history = useHistory();
@@ -53,14 +59,10 @@ const ProductListItem = ({
 
     // Add item to cart
     addItemToCart(item);
-  };
 
-  //Add to Favorite event
-  const handleAddToFavorite = (event) => {
-    // Stop Event Propagation
-    event.stopPropagation();
-
-    // TODO : add to current user's favorite list
+    // Show a notification to user
+    showNotification({ message: "Item added to the cart", type: "success" });
+    setTimeout(() => removeNotification(), 5000);
   };
 
   const classes = useStyles({ img: imgURL });
@@ -112,6 +114,8 @@ const mapDispatchToProps = (dispatch) => ({
   addItemToCart: (item) => dispatch(addCartItem(item)),
   addToFavoriteList: (item) => dispatch(addToFavorite(item)),
   removeFromFavoriteList: (item) => dispatch(removeFromFavorite(item)),
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductListItem);
