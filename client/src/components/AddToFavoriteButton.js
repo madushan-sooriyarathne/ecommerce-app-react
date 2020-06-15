@@ -24,7 +24,6 @@ const AddToFavoriteButton = (props) => {
     removeNotification,
     isSmall = false,
   } = props;
-
   // Styles
   const classes = useStyles({ isSmall });
 
@@ -56,10 +55,13 @@ const AddToFavoriteButton = (props) => {
   useEffect(() => {
     const updateFavoriteStatus = async () => {
       if (ref.current) {
-        if (isFavorite) {
-          await addToFavorite(currentUserId, productId);
-        } else {
-          await removeFavorite(currentUserId, productId);
+        // if there is no users logged in skip this
+        if (currentUserId) {
+          if (isFavorite) {
+            await addToFavorite(currentUserId, productId);
+          } else {
+            await removeFavorite(currentUserId, productId);
+          }
         }
       } else {
         ref.current = true;
@@ -69,15 +71,19 @@ const AddToFavoriteButton = (props) => {
     updateFavoriteStatus();
   }, [isFavorite, currentUserId]);
 
-  return (
-    <svg className={classes.AddToFavoriteButton} onClick={handleFavorite}>
-      {isFavorite ? (
-        <use xlinkHref={`${sprites}#icon-heart-filled`}></use>
-      ) : (
-        <use xlinkHref={`${sprites}#icon-heart-empty`}></use>
-      )}
-    </svg>
-  );
+  if (currentUserId) {
+    return (
+      <svg className={classes.AddToFavoriteButton} onClick={handleFavorite}>
+        {isFavorite ? (
+          <use xlinkHref={`${sprites}#icon-heart-filled`}></use>
+        ) : (
+          <use xlinkHref={`${sprites}#icon-heart-empty`}></use>
+        )}
+      </svg>
+    );
+  } else {
+    return <></>;
+  }
 };
 
 const mapDispatchToProps = (dispatch) => ({

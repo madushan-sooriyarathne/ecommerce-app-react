@@ -6,10 +6,13 @@ import { signOutUser } from "../utils/FirebaseUtils";
 import ButtonStatic from "./buttons/ButtonStatic";
 
 import useStyles from "../styles/components/CurrentUserBadgeStyles";
+import { updateFavoriteProductList } from "../redux/reducers/favorite-product-list/FavoriteProductListActions";
+import { connect } from "react-redux";
 
 const CurrentUserBadge = ({
   username,
   displayImage,
+  clearFavoriteList,
   withAccountLink = false,
 }) => {
   //Styles
@@ -21,7 +24,10 @@ const CurrentUserBadge = ({
   const handleUserSignOut = (event) => {
     try {
       signOutUser();
-      console.log("User Signed out");
+
+      // Clear the favorite list
+      clearFavoriteList();
+
       history.push("/signup");
     } catch (error) {
       console.error(
@@ -76,4 +82,8 @@ const CurrentUserBadge = ({
   );
 };
 
-export default CurrentUserBadge;
+const mapDispatchToProps = (dispatch) => ({
+  clearFavoriteList: () => dispatch(updateFavoriteProductList([])),
+});
+
+export default connect(null, mapDispatchToProps)(CurrentUserBadge);
