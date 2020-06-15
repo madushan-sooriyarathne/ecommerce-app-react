@@ -6,8 +6,13 @@ import FormField from "../components/FormField";
 import Button from "../components/buttons/Button";
 
 import useStyles from "../styles/layouts/NewsletterStyles";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
+import { connect } from "react-redux";
 
-const Newsletter = () => {
+const Newsletter = ({ showNotification, removeNotification }) => {
   const classes = useStyles();
 
   const [email, updateEmail, resetEmail] = useInputState("");
@@ -16,7 +21,11 @@ const Newsletter = () => {
     event.preventDefault();
 
     // TODO : implement the saving user's email functionality
-    alert(`You successfully subscribed to our newsletter with ${email}`);
+    showNotification({
+      message: "You have successfuly subscribe to our newslatter",
+      type: "success",
+    });
+    setTimeout(() => removeNotification(), 5000);
 
     //Clear the field
     resetEmail();
@@ -45,4 +54,9 @@ const Newsletter = () => {
   );
 };
 
-export default Newsletter;
+const mapDispatchToProps = (dispatch) => ({
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
+});
+
+export default connect(null, mapDispatchToProps)(Newsletter);
