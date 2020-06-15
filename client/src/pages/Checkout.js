@@ -3,6 +3,10 @@ import { connect } from "react-redux";
 
 import useInputState from "../hooks/UseInputState";
 import useListState from "../hooks/UseListState";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 import FormField from "../components/FormField";
 import ButtonAnimated from "../components/buttons/ButtonAnimated";
@@ -15,16 +19,19 @@ import { subTotalSelector } from "../redux/reducers/cart-list/CartListSelectors"
 import StripePaymentPopup from "../components/StripePaymentPopup";
 import ButtonStatic from "../components/buttons/ButtonStatic";
 import { firestore } from "../utils/FirebaseUtils";
-import { app } from "firebase";
 
-const Checkout = ({ subTotal, currentUser }) => {
+const Checkout = ({
+  subTotal,
+  currentUser,
+  showNotification,
+  removeNotification,
+}) => {
   const classes = useStyles();
 
   // form ref
   const formRef = useRef();
 
   //State
-  const [shipping, setShipping] = useState(10);
   const [discount, setDiscount] = useState(0);
   const [popupOpen, setPopupOpen] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({});
@@ -60,57 +67,41 @@ const Checkout = ({ subTotal, currentUser }) => {
   );
 
   // Billing address form status
-  const [
-    billingCountry,
-    updateBillingCountry,
-    resetBillingCountry,
-  ] = useInputState(currentUser.address.country || "");
-  const [
-    billingAddressLineOne,
-    updateBillingAddressLineOne,
-    resetBillingAddressLineOne,
-  ] = useInputState(currentUser.address.addressLineOne || "");
-  const [
-    billingAddressLineTwo,
-    updateBillingAddressLineTwo,
-    resetBillingAddressLineTwo,
-  ] = useInputState(currentUser.address.addressLineTwo || "");
+  const [billingCountry, updateBillingCountry] = useInputState(
+    currentUser.address.country || ""
+  );
+  const [billingAddressLineOne, updateBillingAddressLineOne] = useInputState(
+    currentUser.address.addressLineOne || ""
+  );
+  const [billingAddressLineTwo, updateBillingAddressLineTwo] = useInputState(
+    currentUser.address.addressLineTwo || ""
+  );
   const [billingCity, updateBillingCity, resetBillingCity] = useInputState(
     currentUser.address.city || ""
   );
-  const [
-    billingPostalCode,
-    updateBillingPostalCode,
-    resetBillingPostalCode,
-  ] = useInputState(currentUser.address.postalCode || "");
+  const [billingPostalCode, updateBillingPostalCode] = useInputState(
+    currentUser.address.postalCode || ""
+  );
 
   // Shipping address form state
-  const [
-    shippingCountry,
-    updateShippingCountry,
-    resetShippingCountry,
-  ] = useInputState(currentUser.address.country || "");
-  const [
-    shippingAddressLineOne,
-    updateShippingAddressLineOne,
-    resetShippingAddressLineOne,
-  ] = useInputState(currentUser.address.addressLineOne || "");
-  const [
-    shippingAddressLineTwo,
-    updateShippingAddressLineTwo,
-    resetShippingAddressLineTwo,
-  ] = useInputState(currentUser.address.addressLineTwo || "");
-  const [shippingCity, updateShippingCity, resetShippingCity] = useInputState(
+  const [shippingCountry, updateShippingCountry] = useInputState(
+    currentUser.address.country || ""
+  );
+  const [shippingAddressLineOne, updateShippingAddressLineOne] = useInputState(
+    currentUser.address.addressLineOne || ""
+  );
+  const [shippingAddressLineTwo, updateShippingAddressLineTwo] = useInputState(
+    currentUser.address.addressLineTwo || ""
+  );
+  const [shippingCity, updateShippingCity] = useInputState(
     currentUser.address.city || ""
   );
-  const [
-    shippingPostalCode,
-    updateShippingPostalCode,
-    resetShippingPostalCode,
-  ] = useInputState(currentUser.address.postalCode || "");
+  const [shippingPostalCode, updateShippingPostalCode] = useInputState(
+    currentUser.address.postalCode || ""
+  );
 
   // Coupon code field status
-  const [couponCode, updateCouponCode, resetCouponCode] = useInputState("");
+  const [couponCode, updateCouponCode] = useInputState("");
 
   // handle checkout button click event
   const handleFormSubmit = () => {
@@ -144,21 +135,6 @@ const Checkout = ({ subTotal, currentUser }) => {
 
       setPopupOpen(true);
     }
-
-    // Clear the field
-    // resetFullName();
-    // resetPhoneNumber();
-    // resetEmail();
-    // resetBillingCountry();
-    // resetBillingAddressLineOne();
-    // resetBillingAddressLineTwo();
-    // resetBillingCity();
-    // resetBillingPostalCode();
-    // resetShippingCountry();
-    // resetShippingAddressLineOne();
-    // resetShippingAddressLineTwo();
-    // resetShippingCity();
-    // resetShippingPostalCode();
   };
 
   // Handle shipping partner select
@@ -198,10 +174,19 @@ const Checkout = ({ subTotal, currentUser }) => {
       if (coupon) {
         console.log(coupon);
         setDiscount(coupon.discount);
+        showNotification({ message: "Coupon code applied", type: "success" });
+        setTimeout(() => removeNotification(), 5000);
       } else {
         setDiscount(0);
       }
     } catch (error) {
+      showNotification({
+        message: "Error getting coupon code from the server",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
+
+      // show the error in console
       console.error(
         `Error getting the coupon code data from the server : ${error.message}`
       );
@@ -442,4 +427,9 @@ const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
 });
 
-export default connect(mapStateToProps, null)(Checkout);
+const mapDispatchToProps = (dispatch) => ({
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

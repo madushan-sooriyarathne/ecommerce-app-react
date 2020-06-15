@@ -21,6 +21,10 @@ import AddToFavoriteButton from "../components/AddToFavoriteButton";
 import useStyles from "../styles/pages/ProductPageStyles";
 
 import useListState from "../hooks/UseListState";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 const ProductPage = ({
   currentUserId,
@@ -29,6 +33,8 @@ const ProductPage = ({
   addItemToCart,
   addToFavoriteList,
   removeFromFavoriteList,
+  showNotification,
+  removeNotification,
 }) => {
   // Styles
   const classes = useStyles();
@@ -65,6 +71,10 @@ const ProductPage = ({
     };
 
     addItemToCart(item);
+
+    //show success notification
+    showNotification({ message: "Item added to cart", type: "successs" });
+    setTimeout(() => removeNotification(), 5000);
   };
 
   const handleSizeSelect = (event) => {
@@ -192,6 +202,8 @@ const mapDispatchToProps = (dispatch) => ({
   addItemToCart: (item) => dispatch(addCartItem(item)),
   addToFavoriteList: (item) => dispatch(addToFavorite(item)),
   removeFromFavoriteList: (item) => dispatch(removeFromFavorite(item)),
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);

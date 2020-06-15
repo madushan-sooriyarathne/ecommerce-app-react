@@ -16,10 +16,15 @@ import {
 } from "../redux/reducers/cart-list/CartListSelectors";
 import { getCurrentUserId } from "../redux/reducers/user/UserSelectors";
 import { clearCartList } from "../redux/reducers/cart-list/CartListActions";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
-import useStyles from "../styles/components/StripeCheckoutFormStyles";
 import ButtonStatic from "./buttons/ButtonStatic";
 import HeadingPrimary from "./headings/HeadingPrimary";
+
+import useStyles from "../styles/components/StripeCheckoutFormStyles";
 
 const useOptions = () => {
   const options = useMemo(
@@ -98,7 +103,8 @@ const StripeCheckoutForm = ({
       );
 
       if (token.error) {
-        console.error("Error creating token");
+        showNotification({ message: "Error creating token", type: "error" });
+        setTimeout(() => removeNotification(), 5000);
       } else {
         // TODO: move whole payment part to the backend.
         // Send the products and quantities to the back end process the payment amount in the back end
@@ -154,6 +160,13 @@ const StripeCheckoutForm = ({
                 stripeCustomerId: paymentData.customer,
               });
             } catch (error) {
+              showNotification({
+                message: "Error updating current user's sripe ID",
+                type: "warning",
+              });
+              setTimeout(() => removeNotification(), 5000);
+
+              // console out the error
               console.error(
                 `Error updating current user's stripe id : ${error.message}`
               );
@@ -172,7 +185,11 @@ const StripeCheckoutForm = ({
         }
       }
     } catch (error) {
-      console.error(error);
+      showNotification({
+        message: error.messge,
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
     }
 
     setLoading(false);
@@ -212,6 +229,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   clearCartMenu: () => dispatch(clearCartList()),
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StripeCheckoutForm);
