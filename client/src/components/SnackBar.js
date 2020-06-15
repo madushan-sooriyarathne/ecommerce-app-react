@@ -4,10 +4,16 @@ import useStyles from "../styles/components/SnackBarStyles";
 
 import sprites from "../img/svg/sprites.svg";
 import { connect } from "react-redux";
+import { removeNotification } from "../redux/reducers/notification/NotifcationActions";
 
-const SnackBar = ({ notification }) => {
+const SnackBar = ({ notification, removeNotification }) => {
   // JSS styles hook
   const classes = useStyles();
+
+  const handleClose = () => {
+    // remove current notification from the state.
+    removeNotification();
+  };
 
   if (notification) {
     const color =
@@ -25,7 +31,7 @@ const SnackBar = ({ notification }) => {
         style={{ backgroundColor: color }}
       >
         <p className={classes.SnackBar_message}>{notification.message}</p>
-        <button className={classes.SnackBar_closeButton}>
+        <button className={classes.SnackBar_closeButton} onClick={handleClose}>
           <svg>
             <use xlinkHref={`${sprites}#icon-close`}></use>
           </svg>
@@ -41,4 +47,8 @@ const mapStateToProps = (state) => ({
   notification: state.notifications.notification,
 });
 
-export default connect(mapStateToProps, null)(SnackBar);
+const mapDispatchToProps = (dispatch) => ({
+  removeNotification: () => dispatch(removeNotification()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SnackBar);

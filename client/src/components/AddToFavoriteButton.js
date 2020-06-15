@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from "react";
+import { connect } from "react-redux";
 
 import { addToFavorite, removeFavorite } from "../utils/FirebaseUtils";
+
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 import sprites from "../img/svg/sprites.svg";
 
@@ -14,6 +20,8 @@ const AddToFavoriteButton = (props) => {
     isFavorite,
     removeFromFavoriteList,
     addToFavoriteList,
+    showNotification,
+    removeNotification,
     isSmall = false,
   } = props;
 
@@ -28,8 +36,18 @@ const AddToFavoriteButton = (props) => {
 
     if (isFavorite) {
       removeFromFavoriteList(productId);
+      showNotification({
+        message: "item removed from your favorite list",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
     } else {
       addToFavoriteList(productId);
+      showNotification({
+        message: "item added to your favorite list",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
     }
   };
 
@@ -62,4 +80,9 @@ const AddToFavoriteButton = (props) => {
   );
 };
 
-export default AddToFavoriteButton;
+const mapDispatchToProps = (dispatch) => ({
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
+});
+
+export default connect(null, mapDispatchToProps)(AddToFavoriteButton);
