@@ -26,12 +26,18 @@ import Page from "./Page";
 
 import useStyles from "../styles/pages/AccountStyles";
 import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 const Account = ({
   currentUser,
   favoriteProductList,
   productList,
   updateCurrentUserLocal,
+  showNotification,
+  removeNotification,
 }) => {
   // State
   const [isDisabled, toggleIsDisabled] = useToggleState(true);
@@ -136,12 +142,30 @@ const Account = ({
       phoneNumber,
     };
 
-    // update the user record in firebase
-    await updateCurrentUser(currentUser.uid, data);
+    try {
+      // update the user record in firebase
+      await updateCurrentUser(currentUser.uid, data);
 
-    // update the user record in local redux state
-    // NOTE: Maybe there is a good way to do it. But at the moment this is the best i know.
-    updateCurrentUserLocal(data);
+      // update the user record in local redux state
+      // NOTE: Maybe there is a good way to do it. But at the moment this is the best i know.
+      updateCurrentUserLocal(data);
+
+      // show notification to user
+      showNotification({
+        message: "Account details updated successfully",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
+    } catch (error) {
+      showNotification({
+        message: "Error updating Account details.",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
+
+      // log errors to console
+      console.error(error.message);
+    }
 
     // Stop loading animation of the button
     setLoading(false);
@@ -160,6 +184,11 @@ const Account = ({
         const orderCollectionSnap = await orderCollectionRef.get();
         setOrders(orderCollectionSnap.docs.map((doc) => doc.data()));
       } catch (error) {
+        showNotification({
+          message: "Error getting user's orders",
+          type: "error",
+        });
+        setTimeout(() => removeNotification(), 5000);
         console.error("Error fetching orders");
       }
     };
@@ -408,6 +437,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   updateCurrentUserLocal: (updatedFields) =>
     dispatch(updateUser(updatedFields)),
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);
