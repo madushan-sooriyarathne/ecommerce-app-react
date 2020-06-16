@@ -11,15 +11,15 @@ export default createUseStyles({
     gridTemplateColumns: "minmax(max-content, 1fr) min-content",
     gap: "2rem",
     alignItems: "center",
-    padding: "2rem",
+    padding: "1rem 2rem",
     backgroundColor: "var(--color-primary)",
     borderRadius: "5px",
-    visibilty: "hidden",
+    visibility: "hidden",
     opacity: "0",
   },
 
   SnackBar_show: {
-    visibilty: "visible",
+    visibility: "visible",
     opacity: "1",
     transform: "translateY(0)",
     transition: "all 0.2s ease-in-out",
