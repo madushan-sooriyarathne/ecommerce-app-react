@@ -30,9 +30,9 @@ export default createUseStyles({
     fontWeight: 500,
     textTransform: "uppercase",
     padding: "2rem 4rem",
-    border: "2px solid #fff",
+    border: "2px solid var(--color-white)",
     backgroundColor: "rgba(225,225,225,0.3  )",
-    color: "#fff",
+    color: "var(--color-white)",
 
     outline: "none",
     cursor: "pointer",
@@ -40,8 +40,8 @@ export default createUseStyles({
     transition: "all 0.2s ease-out",
 
     "&:hover": {
-      color: "#3C2858",
-      backgroundColor: "#fff",
+      color: "var(--color-primary)",
+      backgroundColor: "var(--color-white)",
     },
   },
 });

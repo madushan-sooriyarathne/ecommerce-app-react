@@ -13,7 +13,7 @@ export default createUseStyles({
     marginBottom: "5rem",
   },
   Order_OrderSummery: {
-    backgroundColor: "#FCF4FB",
+    backgroundColor: "var(--color-primary-lighter)",
     padding: "5rem",
     width: "100rem",
     display: "flex",

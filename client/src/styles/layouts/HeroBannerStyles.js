@@ -29,7 +29,7 @@ export default createUseStyles({
     fontSize: "8rem",
     fontWeight: 700,
     lineHeight: "1.2",
-    color: "#90708C",
+    color: "var(--color-primary-pale)",
     marginBottom: "3rem",
   },
 });

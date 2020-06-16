@@ -80,8 +80,8 @@ const ProductListItem = ({
         </div>
         <div className={classes.Item_btnSet}>
           <ButtonAnimated
-            primaryColor="#3C2858"
-            secondaryColor="#fff"
+            primaryColor="var(--color-primary)"
+            secondaryColor="var(--color-white)"
             onClick={handleAddToCart}
             isSmall={true}
             styles={{

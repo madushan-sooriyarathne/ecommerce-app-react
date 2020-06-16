@@ -5,16 +5,16 @@ export default createUseStyles({
     display: "flex",
     alignItems: "center",
     padding: "1rem 3rem",
-    border: "2px solid #3c2858",
+    border: "2px solid var(--color-primary)",
     cursor: "pointer",
     transition: "background-color 0.2s ease-in-out",
 
     "&:hover": {
-      backgroundColor: "#3c2858",
+      backgroundColor: "var(--color-primary)",
     },
 
     "&:hover $Vendor_name": {
-      color: "#fff",
+      color: "var(--color-white)",
     },
   },
   Vendor_logo: {
@@ -25,7 +25,7 @@ export default createUseStyles({
   Vendor_name: {
     fontSize: "1.8rem",
     fontWeight: 500,
-    color: "#3c2858",
+    color: "var(--color-primary)",
     textTransform: "uppercase",
     transition: "color 0.2s ease-in-out",
   },

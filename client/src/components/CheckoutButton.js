@@ -43,7 +43,7 @@ const CheckoutButton = ({ amount, handleFormSubmit }) => {
   return (
     <StripeCheckout {...configs}>
       <ButtonStatic
-        primaryColor="#3c2858"
+        primaryColor="var(--color-primary)"
         isSmall={true}
         styles={{ width: "100%" }}
       >

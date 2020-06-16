@@ -14,7 +14,7 @@ export default createUseStyles({
   Heading_btn: {
     fontSize: "1.4rem",
     fontWeight: 700,
-    color: "rgba(99, 83, 128, 1)",
+    color: "var(--color-primary-medium)",
     backgroundColor: "transparent",
     border: "none",
     outline: "none",
@@ -22,7 +22,7 @@ export default createUseStyles({
     transition: "color 0.2s ease-out",
 
     "&:hover": {
-      color: "#3c2858",
+      color: "var(--color-primary)",
     },
 
     "&:hover  $arrow": {

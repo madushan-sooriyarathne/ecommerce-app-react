@@ -73,6 +73,6 @@ export default createUseStyles({
   Btn_svg: {
     width: "4rem",
     height: "4rem",
-    fill: "#fff",
+    fill: "var(--color-white)",
   },
 });

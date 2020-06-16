@@ -15,9 +15,7 @@ const HeroBanner = () => {
         <h1 className={classes.mainHeading}>
           Fashion <br /> Collection 2020
         </h1>
-        <ButtonAnimated primaryColor="#3C2858" secondaryColor="#fff">
-          Shop Now
-        </ButtonAnimated>
+        <ButtonAnimated>Shop Now</ButtonAnimated>
       </div>
     </div>
   );

@@ -194,7 +194,7 @@ const Account = ({
             id={classes.Account_details_overview}
             buttons={[
               <ButtonStatic
-                primaryColor="#b73326"
+                primaryColor="var(--color-error)"
                 secondaryColor="var(--color-white)"
                 isSmall={true}
                 styles={{

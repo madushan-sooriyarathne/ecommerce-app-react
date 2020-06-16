@@ -37,11 +37,11 @@ const useOptions = () => {
           letterSpacing: "0.025em",
           fontFamily: "var(--font-family-primary)",
           "::placeholder": {
-            color: "#aab7c4",
+            color: "var(--color-gray)",
           },
         },
         invalid: {
-          color: "#9e2146",
+          color: "var(--color-error)",
         },
       },
     }),

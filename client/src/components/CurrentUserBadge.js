@@ -64,7 +64,7 @@ const CurrentUserBadge = ({
           )}
 
           <ButtonStatic
-            primaryColor="#ea9410"
+            primaryColor="var(--color-danger)"
             isSmall={true}
             onClick={handleUserSignOut}
             styles={{

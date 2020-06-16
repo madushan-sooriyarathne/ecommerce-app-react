@@ -27,13 +27,13 @@ export default createUseStyles({
 
     "& a": {
       fontSize: "1.4rem",
-      color: "#3c2858",
+      color: "var(--color-primary)",
       textDecoration: "none",
       transition: "all 0.2s ease-in-out",
       marginBottom: "0.5rem",
 
       "&:hover": {
-        color: lightenDarkenColor("#3c2858", 50),
+        color: lightenDarkenColor("var(--color-primary)", 50),
         textDecoration: "underline",
       },
     },

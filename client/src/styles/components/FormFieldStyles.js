@@ -16,7 +16,7 @@ export default createUseStyles({
     // minWidth: "50rem",
     width: "100%",
     height: "100%",
-    color: "#3c2858",
+    color: "var(--color-primary)",
     outline: "none",
 
     "&:placeholder-shown + $FormField_label": {
@@ -35,7 +35,7 @@ export default createUseStyles({
     visibility: "visible",
     opacity: 1,
     transition: "all 0.2s ease-in-out",
-    color: "#3c2858",
+    color: "var(--color-primary)",
     marginBottom: "0.5rem",
   },
 });

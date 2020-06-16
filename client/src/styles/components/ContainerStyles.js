@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 export default createUseStyles({
   Container: {
     padding: "10rem",
-    backgroundColor: "#ffebfc",
+    backgroundColor: "var(--color-primary-light)",
 
     display: "flex",
     flexDirection: "column",

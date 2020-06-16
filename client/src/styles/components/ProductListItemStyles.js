@@ -8,7 +8,7 @@ export default createUseStyles({
   ProductListItem: {
     width: "100%",
     height: PRODUCT_LIST_ITEM_HEIGHT,
-    backgroundColor: "#fff5fe",
+    backgroundColor: "var(--color-primary-lighter)",
     position: "relative",
     overflow: "hidden",
     transition: "all 0.2s 0.2s ease-in-out",
@@ -23,7 +23,7 @@ export default createUseStyles({
       transform: "scaleY(0)",
       transformOrigin: "50% 50%",
       zIndex: "-1",
-      backgroundColor: "#fcd9f8",
+      backgroundColor: "var(--color-primary-light)",
       transition: "transform 0.2s ease-in-out",
     },
 
@@ -50,7 +50,7 @@ export default createUseStyles({
     bottom: 0,
     fontSize: "1.5rem",
     fontWeight: 500,
-    color: "#fff",
+    color: "var(--color-white)",
     padding: "0.5rem 1rem",
   },
   Item_content: {

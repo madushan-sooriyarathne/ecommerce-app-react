@@ -15,7 +15,7 @@ export default createUseStyles({
     left: "0",
     zIndex: 100,
     padding: "0 5rem",
-    backgroundColor: "#f6eafa",
+    backgroundColor: "var(--color-primary-lighter)",
   },
 
   NavBar_menu_btn: {
@@ -66,7 +66,7 @@ export default createUseStyles({
       fontSize: "4rem",
       fontFamily: "var(--font-family-secondary)",
       textTransform: "uppercase",
-      color: "#3c2858",
+      color: "var(--color-primary)",
     },
   },
 

@@ -150,8 +150,6 @@ const Signup = ({ setCurrentUser }) => {
             isRequired={true}
           />
           <ButtonStatic
-            primaryColor="#3C2858"
-            secondaryColor="#fff"
             type="submit"
             isSmall={true}
             styles={{ marginTop: "1rem", alignSelf: "stretch  " }}

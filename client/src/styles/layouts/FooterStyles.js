@@ -10,8 +10,8 @@ export default createUseStyles({
     width: "100%",
     minHeight: FOOTER_MIN_HEIGHT,
     zIndex: 10,
-    backgroundColor: "#3c2858",
-    color: "#fff",
+    backgroundColor: "var(--color-primary)",
+    color: "var(--color-white)",
 
     display: "grid",
     gridTemplateColumns:
@@ -36,7 +36,7 @@ export default createUseStyles({
     fontWeight: 500,
     textTransform: "uppercase",
     marginBottom: "3rem",
-    borderBottom: "2px solid #fff",
+    borderBottom: "2px solid var(--color-white)",
   },
   NavLinks_links: {
     display: "flex",
@@ -49,6 +49,6 @@ export default createUseStyles({
   Link: {
     fontSize: "1.4rem",
     textDecoration: "none",
-    color: "#fff",
+    color: "var(--color-white)",
   },
 });
