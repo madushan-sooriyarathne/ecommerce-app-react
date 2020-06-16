@@ -12,9 +12,9 @@ const CategoryContainer = () => {
   const classes = useStyles();
   return (
     <div className={classes.CategoryContainer}>
-      <CategoryBox link="/men" img={imgMen} text="Men" />
-      <CategoryBox link="/women" img={imgWomen} text="Women" />
-      <CategoryBox link="/sport" img={imgSport} text="Sport" />
+      <CategoryBox link="men" img={imgMen} text="Men" />
+      <CategoryBox link="women" img={imgWomen} text="Women" />
+      <CategoryBox link="sport" img={imgSport} text="Sport" />
     </div>
   );
 };
