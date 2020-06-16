@@ -6,21 +6,24 @@ import { collectionSelector } from "../redux/reducers/product-list/ProductListSe
 import Collection from "../layouts/Collection";
 
 import useStyles from "../styles/pages/ShopStyles";
+import Page from "./Page";
 
 const Shop = ({ mensProducts, womensProducts, sportsProducts }) => {
   const classes = useStyles();
   return (
-    <div className={classes.Shop}>
-      {!(mensProducts.length < 1) && (
-        <Collection type="men" productList={mensProducts} />
-      )}
-      {!(womensProducts.length < 1) && (
-        <Collection type="women" productList={womensProducts} />
-      )}
-      {!(sportsProducts.length < 1) && (
-        <Collection type="sport" productList={sportsProducts} />
-      )}
-    </div>
+    <Page>
+      <div className={classes.Shop}>
+        {!(mensProducts.length < 1) && (
+          <Collection type="men" productList={mensProducts} />
+        )}
+        {!(womensProducts.length < 1) && (
+          <Collection type="women" productList={womensProducts} />
+        )}
+        {!(sportsProducts.length < 1) && (
+          <Collection type="sport" productList={sportsProducts} />
+        )}
+      </div>
+    </Page>
   );
 };
 
