@@ -29,7 +29,8 @@ const Checkout = ({
   const classes = useStyles();
 
   // form ref
-  const formRef = useRef();
+  const billingFormRef = useRef();
+  const shippingFormRef = useRef();
 
   //State
   const [discount, setDiscount] = useState(0);
@@ -56,15 +57,13 @@ const Checkout = ({
   ]);
 
   //Form field states
-  const [fullName, updateFullName, resetFullName] = useInputState(
+  const [fullName, updateFullName] = useInputState(
     currentUser.displayName || ""
   );
-  const [phoneNumber, updatePhoneNumber, resetPhoneNumber] = useInputState(
+  const [phoneNumber, updatePhoneNumber] = useInputState(
     currentUser.phoneNumber || ""
   );
-  const [email, updateEmail, resetEmail] = useInputState(
-    currentUser.email || ""
-  );
+  const [email, updateEmail] = useInputState(currentUser.email || "");
 
   // Billing address form status
   const [billingCountry, updateBillingCountry] = useInputState(
@@ -76,7 +75,7 @@ const Checkout = ({
   const [billingAddressLineTwo, updateBillingAddressLineTwo] = useInputState(
     currentUser.address.addressLineTwo || ""
   );
-  const [billingCity, updateBillingCity, resetBillingCity] = useInputState(
+  const [billingCity, updateBillingCity] = useInputState(
     currentUser.address.city || ""
   );
   const [billingPostalCode, updateBillingPostalCode] = useInputState(
@@ -103,13 +102,22 @@ const Checkout = ({
   // Coupon code field status
   const [couponCode, updateCouponCode] = useInputState("");
 
+  // function to run when form submit event triggered. and prevent the form's default behavior.
+  const validateForm = (event) => {
+    event.preventDefault();
+  };
+
   // handle checkout button click event
   const handleFormSubmit = () => {
-    console.log(formRef);
-    // formRef.current.submit();
+    // trigger submit event on both forms. this will run default form validations and mark if any field not validated.
+    billingFormRef.current.dispatchEvent(new Event("submit"));
+    shippingFormRef.current.dispatchEvent(new Event("submit"));
 
-    // TODO: check if form is validated
-    if (true) {
+    // check if both forms are validated. only proceed if validated.
+    if (
+      billingFormRef.current.reportValidity() &&
+      shippingFormRef.current.reportValidity()
+    ) {
       setCustomerDetails({
         email: email,
         name: fullName,
@@ -204,7 +212,7 @@ const Checkout = ({
             <HeadingSecondary styles={{ marginBottom: "1rem" }}>
               Billing Details
             </HeadingSecondary>
-            <form ref={formRef}>
+            <form ref={billingFormRef} onSubmit={validateForm}>
               <FormField
                 id="NameField"
                 label="Full Name"
@@ -277,7 +285,7 @@ const Checkout = ({
             <HeadingSecondary styles={{ marginBottom: "1rem" }}>
               Shipping Details
             </HeadingSecondary>
-            <form>
+            <form ref={shippingFormRef} onSubmit={validateForm}>
               <FormField
                 id="ShippingCountryField"
                 label="Country"
