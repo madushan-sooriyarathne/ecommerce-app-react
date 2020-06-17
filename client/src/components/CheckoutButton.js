@@ -6,9 +6,6 @@ import ButtonStatic from "./buttons/ButtonStatic";
 const CheckoutButton = ({ amount, handleFormSubmit }) => {
   const onToken = (token) => {
     handleFormSubmit();
-
-    alert("Payment received");
-    console.log(token);
   };
 
   // Configuration for the payment model

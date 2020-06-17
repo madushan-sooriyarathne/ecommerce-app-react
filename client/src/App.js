@@ -49,14 +49,22 @@ const App = ({
   useEffect(() => {
     const unsubscribeToFirebaseAuth = auth.onAuthStateChanged(
       async (userAuth) => {
+        // if user's providerId === 'password' we skip user persisting part here
+        // that is handled in signup page itself
         // On facebook and Google auth below method will store user object in the database
-        // on Email and password auth, since user is already stored in database below method will just return that stored entry
-        const user = await persistUser(userAuth);
-        setCurrentUser(user);
 
-        // Update the favorite product list
-        if (user) {
-          updateFavorites(user.favorites);
+        if (userAuth) {
+          if (userAuth.providerData[0].providerId !== "password") {
+            const user = await persistUser(userAuth);
+            setCurrentUser(user);
+
+            // Update the favorite product list
+            if (user) {
+              updateFavorites(user.favorites);
+            }
+          }
+        } else {
+          setCurrentUser(null);
         }
 
         //Set Firebase state

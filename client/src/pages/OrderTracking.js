@@ -68,8 +68,6 @@ const OrderTracking = ({ currentUser }) => {
     return () => unsubscribeToOrder();
   }, [match.params.order_id, currentUser.uid, order]);
 
-  console.log(order);
-
   return (
     <Page>
       {order ? (

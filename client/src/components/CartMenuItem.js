@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import useStyles from "../styles/components/CartMenuItemStyles";
 
@@ -17,4 +17,4 @@ const CartMenuItem = ({ imgURL, name, qtc, price }) => {
   );
 };
 
-export default CartMenuItem;
+export default memo(CartMenuItem);

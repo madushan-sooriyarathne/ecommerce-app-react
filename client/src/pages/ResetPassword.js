@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import { auth } from "../utils/FirebaseUtils";
+
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 import useInputState from "../hooks/UseInputState";
 import FormField from "../components/FormField";
@@ -37,7 +43,15 @@ const ResetPassword = ({ oobCode, continueUrl }) => {
           error.code === "auth/invalid-action-code" &&
             "Link is expired, or has already been used."
         );
-        console.log(error);
+
+        // Show error message popup to user
+        showNotification({
+          message: "Link is Expired or has already been used",
+          type: "error",
+        });
+        setTimeout(() => {
+          removeNotification();
+        }, 5000);
       }
     };
     verifyActionCode();
@@ -49,13 +63,33 @@ const ResetPassword = ({ oobCode, continueUrl }) => {
       // Password reset successful
       setPasswordChanged(true);
 
+      // how success message popup to user
+      showNotification({
+        message: "Password was reset successfully",
+        type: "success",
+      });
+      setTimeout(() => {
+        removeNotification();
+      }, 5000);
+
       // Set the redirect url if there is redirect url given
       if (continueUrl) {
         setRedirectUrl(continueUrl);
       }
     } catch (error) {
       // Password reset is not successful
-      console.log(error);
+
+      // show error message popup to user
+      showNotification({
+        message: "Error occurred while resetting the password",
+        type: "error",
+      });
+      setTimeout(() => {
+        removeNotification();
+      }, 5000);
+
+      // console out the error
+      console.error(`Error resetting the password : ${error.message}`);
       setPasswordChangeError(error.message);
     }
 
@@ -140,4 +174,9 @@ const ResetPassword = ({ oobCode, continueUrl }) => {
   }
 };
 
-export default ResetPassword;
+const mapDispatchToProps = (dispatch) => ({
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
+});
+
+export default connect(null, mapDispatchToProps)(ResetPassword);

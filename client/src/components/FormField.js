@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import useStyles from "../styles/components/FormFieldStyles";
 
@@ -35,4 +35,4 @@ const FormField = ({
   );
 };
 
-export default FormField;
+export default memo(FormField);

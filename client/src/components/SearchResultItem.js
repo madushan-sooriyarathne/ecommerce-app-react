@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useHistory } from "react-router-dom";
 
 import useStyles from "../styles/components/SearchResultItemStyles";
@@ -33,4 +33,4 @@ const SearchResultItem = ({ name, image, id, price, handleClose }) => {
   );
 };
 
-export default SearchResultItem;
+export default memo(SearchResultItem);

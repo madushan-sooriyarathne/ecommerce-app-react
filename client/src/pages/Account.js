@@ -176,7 +176,6 @@ const Account = ({
 
   useEffect(() => {
     const getOrderData = async () => {
-      console.log("Im updated");
       const orderCollectionRef = firestore
         .collection("orders")
         .where("userId", "==", currentUser.uid);

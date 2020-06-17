@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -118,4 +118,6 @@ const mapDispatchToProps = (dispatch) => ({
   removeNotification: () => dispatch(removeNotification()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListItem);
+export default memo(
+  connect(mapStateToProps, mapDispatchToProps)(ProductListItem)
+);

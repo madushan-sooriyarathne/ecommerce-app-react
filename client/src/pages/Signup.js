@@ -11,6 +11,7 @@ import {
   signupWithGoogle,
   signupWithFacebook,
   signupWithEmailAndPassword,
+  auth,
   persistUser,
 } from "../utils/FirebaseUtils";
 
@@ -19,12 +20,23 @@ import ButtonStatic from "../components/buttons/ButtonStatic";
 import ExternalAuthLink from "../components/ExternalAuthLink";
 import Container from "../components/Container";
 import HeadingPrimary from "../components/headings/HeadingPrimary";
+
 import FormContainer from "../components/FormContainer";
 import CenteredPage from "./CenteredPage";
 
 import useStyles from "../styles/pages/SignupStyles";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
+import { updateFavoriteProductList } from "../redux/reducers/favorite-product-list/FavoriteProductListActions";
 
-const Signup = ({ setCurrentUser }) => {
+const Signup = ({
+  setCurrentUser,
+  showNotification,
+  removeNotification,
+  updateFavorites,
+}) => {
   // State
   //Input Field state
   const [name, updateName, resetNameField] = useInputState("");
@@ -46,21 +58,34 @@ const Signup = ({ setCurrentUser }) => {
       try {
         const userAuth = await signupWithEmailAndPassword(email, password);
 
-        //Persist user to db
-        try {
-          const currentUser = await persistUser(userAuth, {
-            displayName: name,
-          });
-          // update current user in context
-          setCurrentUser(currentUser);
-          // Redirect to verify email page
-          history.push("/verifyEmail");
-        } catch (error) {
-          console.error(
-            `Error Persisting user to db ${error.code} : ${error.message}`
-          );
+        // // update current user's displayName and photoURl
+        // await auth.currentUser.updateProfile({
+        //   displayName: name,
+        //   photoURL:
+        //     "https://firebasestorage.googleapis.com/v0/b/winter-70a60.appspot.com/o/img_avatar2.png?alt=media&token=2732be80-d271-4d99-9250-c2511b3db884",
+        // });
+
+        const user = await persistUser(userAuth.user, { displayName: name });
+
+        setCurrentUser(user);
+
+        if (user) {
+          updateFavorites(user.favorites);
         }
+
+        // show notification to user
+        showNotification({
+          message: "Successfully signed up with Email",
+          type: "success",
+        });
+        setTimeout(() => removeNotification(), 5000);
       } catch (error) {
+        showNotification({
+          message: "Error Occurred while signing up with Email",
+          type: "error",
+        });
+        setTimeout(() => removeNotification(), 5000);
+
         console.error(error.message);
       }
     }
@@ -74,7 +99,12 @@ const Signup = ({ setCurrentUser }) => {
   const handleGoogleSignup = async (event) => {
     try {
       const userAuth = await signupWithGoogle();
-      console.log("User Signed up with Google", userAuth);
+
+      showNotification({
+        message: "User Signed up with Google",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
 
       if (userAuth.emailVerified) {
         // Redirect to homepage on successful signup
@@ -83,6 +113,13 @@ const Signup = ({ setCurrentUser }) => {
         history.push("/verifyEmail");
       }
     } catch (error) {
+      showNotification({
+        message: "Error Occurred while signing up with Google",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
+
+      // console out the error
       console.error(
         `Error Signing up with Google ${error.code} : ${error.message}`
       );
@@ -92,7 +129,12 @@ const Signup = ({ setCurrentUser }) => {
   const handleFacebookSignup = async (event) => {
     try {
       const userAuth = await signupWithFacebook();
-      console.log("User Signed up with facebook", userAuth);
+
+      showNotification({
+        message: "User Signed up with Facebook",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
 
       if (userAuth.emailVerified) {
         // Redirect to home page on successful signup
@@ -101,6 +143,13 @@ const Signup = ({ setCurrentUser }) => {
         history.push("/verifyEmail");
       }
     } catch (error) {
+      showNotification({
+        message: "Error Occurred while signing up with Facebook",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
+
+      // Console out the error
       console.error(
         `Error Signing up with facebook ${error.code} : ${error.message}`
       );
@@ -168,6 +217,10 @@ const Signup = ({ setCurrentUser }) => {
 //Redux Mappings
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  showNotification: (notification) => dispatch(showNotification(notification)),
+  removeNotification: () => dispatch(removeNotification()),
+  updateFavorites: (favoriteItemList) =>
+    dispatch(updateFavoriteProductList(favoriteItemList)),
 });
 
 export default connect(null, mapDispatchToProps)(Signup);

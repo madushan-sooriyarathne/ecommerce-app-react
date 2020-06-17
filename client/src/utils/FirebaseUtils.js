@@ -46,6 +46,9 @@ const getUserDocument = async (uid) => {
 // Store signed-up user in firestore database
 const persistUser = async (userAuth, additionalData) => {
   if (!userAuth) return null;
+
+  console.log(userAuth, additionalData);
+
   const {
     displayName,
     email,
@@ -54,33 +57,46 @@ const persistUser = async (userAuth, additionalData) => {
     photoURL,
     uid,
   } = userAuth;
-  const currentUserRef = firestore.collection("users").doc(uid);
-  const userSnap = await currentUserRef.get();
-  // IF user snap not exists (we don't need to override if there is any data)
-  if (!userSnap.exists) {
-    // Set data
-    currentUserRef
-      .set({
-        displayName,
-        email,
-        emailVerified,
-        phoneNumber,
-        photoURL,
-        providerId: userAuth.providerData[0].providerId,
-        cart: [],
-        favorites: [],
-        stripeCustomerId: null,
-        ...additionalData,
-      })
-      .then(() => {
-        console.log("Successfully stored the user in db");
-      })
-      .catch((error) => {
-        console.error("error storing user in db", error.message);
-      });
-  }
 
-  return getUserDocument(userAuth.uid);
+  const currentUserRef = firestore.collection("users").doc(uid);
+
+  try {
+    const userSnap = await currentUserRef.get();
+
+    // IF user snap not exists (we don't need to override if there is any data)
+    if (!userSnap.exists) {
+      // Set data
+      try {
+        await currentUserRef.set({
+          displayName,
+          email,
+          emailVerified,
+          phoneNumber,
+          photoURL: photoURL
+            ? photoURL
+            : "https://firebasestorage.googleapis.com/v0/b/winter-70a60.appspot.com/o/img_avatar2.png?alt=media&token=2732be80-d271-4d99-9250-c2511b3db884",
+          providerId: userAuth.providerData[0].providerId,
+          address: {
+            addressLineOne: "",
+            addressLineTwo: "",
+            country: "",
+            city: "",
+            postalCode: "",
+          },
+          cart: [],
+          favorites: [],
+          stripeCustomerId: null,
+          ...additionalData,
+        });
+      } catch (error) {
+        console.error("error storing user in db", error.message);
+      }
+    }
+
+    return getUserDocument(userAuth.uid);
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 // update current users properties
@@ -92,7 +108,6 @@ const updateCurrentUser = async (userId, updatedFields) => {
 
     if (userSnap.exists) {
       userRef.update(updatedFields);
-      console.log("User data updated");
     } else {
       console.error("User does not exists in the database");
     }

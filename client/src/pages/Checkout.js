@@ -142,6 +142,12 @@ const Checkout = ({
       });
 
       setPopupOpen(true);
+    } else {
+      showNotification({
+        message: "Please fill all the fields correctly",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
     }
   };
 
@@ -180,7 +186,6 @@ const Checkout = ({
       const coupon = couponCollectionSnap.docs[0].data();
 
       if (coupon) {
-        console.log(coupon);
         setDiscount(coupon.discount);
         showNotification({ message: "Coupon code applied", type: "success" });
         setTimeout(() => removeNotification(), 5000);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useHistory } from "react-router-dom";
 
 import useStyles from "../styles/components/OrderListItemStyles";
@@ -36,5 +36,4 @@ const OrderListItem = ({ orderId, amount, receiptUrl }) => {
   );
 };
 
-
-export default OrderListItem;
+export default memo(OrderListItem);

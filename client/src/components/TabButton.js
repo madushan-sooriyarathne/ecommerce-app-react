@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import useStyles from "../styles/components/TabButtonStyles";
 
 const TabButton = ({
@@ -23,4 +23,4 @@ const TabButton = ({
   );
 };
 
-export default TabButton;
+export default memo(TabButton);
