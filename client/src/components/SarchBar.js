@@ -29,7 +29,9 @@ const SearchBar = ({ productList }) => {
     if (searchFieldText !== "") {
       setSearchResult(
         productList.filter((product) =>
-          product.name.toLowerCase().includes(searchFieldText)
+          product.name
+            .toLowerCase()
+            .includes(searchFieldText.toLocaleLowerCase())
         )
       );
 
