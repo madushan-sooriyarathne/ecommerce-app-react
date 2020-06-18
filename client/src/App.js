@@ -53,18 +53,23 @@ const App = ({
         // that is handled in signup page itself
         // On facebook and Google auth below method will store user object in the database
 
-        if (userAuth) {
-          if (userAuth.providerData[0].providerId !== "password") {
-            const user = await persistUser(userAuth);
-            setCurrentUser(user);
-
-            // Update the favorite product list
-            if (user) {
-              updateFavorites(user.favorites);
-            }
-          }
-        } else {
+        // if userAuth object is null, means user has signed out. thus set the current user to null
+        if (!userAuth) {
           setCurrentUser(null);
+        } else {
+          try {
+            const userRef = await persistUser(userAuth);
+
+            userRef.onSnapshot(async (snapshot) => {
+              // set the current user data from logged in user
+              setCurrentUser({ ...snapshot.data(), uid: userRef.id });
+
+              // update the favorite list
+              updateFavorites(snapshot.data().favorites);
+            });
+          } catch (error) {
+            console.error(error.message);
+          }
         }
 
         //Set Firebase state

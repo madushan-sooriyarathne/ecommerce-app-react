@@ -47,8 +47,7 @@ const getUserDocument = async (uid) => {
 const persistUser = async (userAuth, additionalData) => {
   if (!userAuth) return null;
 
-  console.log(userAuth, additionalData);
-
+  // destruct the userAuth object
   const {
     displayName,
     email,
@@ -92,11 +91,11 @@ const persistUser = async (userAuth, additionalData) => {
         console.error("error storing user in db", error.message);
       }
     }
-
-    return getUserDocument(userAuth.uid);
   } catch (error) {
     console.error(error.message);
   }
+
+  return currentUserRef;
 };
 
 // update current users properties

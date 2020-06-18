@@ -58,20 +58,22 @@ const Signup = ({
       try {
         const userAuth = await signupWithEmailAndPassword(email, password);
 
-        const user = await persistUser(userAuth.user, { displayName: name });
+        if (userAuth) {
+          // store user in the db with extra data.
+          await persistUser(userAuth.user, { displayName: name });
 
-        setCurrentUser(user);
+          // Clear input fields
+          resetNameField();
+          resetEmailField();
+          resetPasswordField();
 
-        if (user) {
-          updateFavorites(user.favorites);
+          // show notification to user
+          showNotification({
+            message: "Successfully signed up with Email",
+            type: "success",
+          });
+          setTimeout(() => removeNotification(), 5000);
         }
-
-        // show notification to user
-        showNotification({
-          message: "Successfully signed up with Email",
-          type: "success",
-        });
-        setTimeout(() => removeNotification(), 5000);
       } catch (error) {
         showNotification({
           message: "Error Occurred while signing up with Email",
@@ -82,11 +84,6 @@ const Signup = ({
         console.error(error.message);
       }
     }
-
-    // Clear input fields
-    resetNameField();
-    resetEmailField();
-    resetPasswordField();
   };
 
   const handleGoogleSignup = async (event) => {
