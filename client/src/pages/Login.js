@@ -11,7 +11,6 @@ import {
   signupWithFacebook,
 } from "../utils/FirebaseUtils";
 
-import { setCurrentUser } from "../redux/reducers/user/UserActions";
 import {
   showNotification,
   removeNotification,
@@ -27,7 +26,7 @@ import useStyles from "../styles/pages/LoginStyles";
 import CenteredPage from "./CenteredPage";
 import FormContainer from "../components/FormContainer";
 
-const Login = ({ setCurrentUser, showNotification, removeNotification }) => {
+const Login = ({ showNotification, removeNotification }) => {
   //State
   //Input field state
   const [email, updateEmail, resetEmailField] = useInputState("");
@@ -45,15 +44,7 @@ const Login = ({ setCurrentUser, showNotification, removeNotification }) => {
 
     //Submit the data
     try {
-      const userAuth = await signInWithEmailAndPassword(email, password);
-
-      // get the user from the db
-      // since user is already in the database, below method will not
-      // store a new user. instead it will return the existing user data
-      const user = await persistUser(userAuth.user);
-
-      // store the user in redux state
-      setCurrentUser(user);
+      await signInWithEmailAndPassword(email, password);
 
       // show success notification to user
       showNotification({
@@ -163,7 +154,6 @@ const Login = ({ setCurrentUser, showNotification, removeNotification }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
   showNotification: (notification) => dispatch(showNotification(notification)),
   removeNotification: () => dispatch(removeNotification()),
 });

@@ -2,8 +2,6 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setCurrentUser } from "../redux/reducers/user/UserActions";
-
 import useInputState from "../hooks/UseInputState";
 
 //Authentication methods
@@ -11,7 +9,6 @@ import {
   signupWithGoogle,
   signupWithFacebook,
   signupWithEmailAndPassword,
-  auth,
   persistUser,
 } from "../utils/FirebaseUtils";
 
@@ -29,14 +26,8 @@ import {
   showNotification,
   removeNotification,
 } from "../redux/reducers/notification/NotifcationActions";
-import { updateFavoriteProductList } from "../redux/reducers/favorite-product-list/FavoriteProductListActions";
 
-const Signup = ({
-  setCurrentUser,
-  showNotification,
-  removeNotification,
-  updateFavorites,
-}) => {
+const Signup = ({ showNotification, removeNotification }) => {
   // State
   //Input Field state
   const [name, updateName, resetNameField] = useInputState("");
@@ -206,11 +197,8 @@ const Signup = ({
 
 //Redux Mappings
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
   showNotification: (notification) => dispatch(showNotification(notification)),
   removeNotification: () => dispatch(removeNotification()),
-  updateFavorites: (favoriteItemList) =>
-    dispatch(updateFavoriteProductList(favoriteItemList)),
 });
 
 export default connect(null, mapDispatchToProps)(Signup);
