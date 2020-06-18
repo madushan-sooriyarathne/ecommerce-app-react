@@ -49,31 +49,32 @@ const App = ({
   useEffect(() => {
     const unsubscribeToFirebaseAuth = auth.onAuthStateChanged(
       async (userAuth) => {
-        // if user's providerId === 'password' we skip user persisting part here
-        // that is handled in signup page itself
-        // On facebook and Google auth below method will store user object in the database
-
         // if userAuth object is null, means user has signed out. thus set the current user to null
         if (!userAuth) {
           setCurrentUser(null);
+          //Set Firebase state
+          setInitialized();
         } else {
           try {
             const userRef = await persistUser(userAuth);
 
             userRef.onSnapshot(async (snapshot) => {
               // set the current user data from logged in user
-              setCurrentUser({ ...snapshot.data(), uid: userRef.id });
+              setCurrentUser({
+                ...snapshot.data(),
+                uid: userRef.id,
+              });
 
               // update the favorite list
               updateFavorites(snapshot.data().favorites);
+
+              //Set Firebase state
+              setInitialized();
             });
           } catch (error) {
             console.error(error.message);
           }
         }
-
-        //Set Firebase state
-        setInitialized();
       }
     );
 
@@ -94,7 +95,7 @@ const App = ({
       unsubscribeToFirebaseAuth();
       unsubscribeToSnapshot();
     };
-  }, [setCurrentUser, setInitialized, addProduct, addListOfProducts]);
+  }, []);
 
   return (
     <div className={classes.App}>
