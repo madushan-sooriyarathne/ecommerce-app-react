@@ -6,6 +6,11 @@ import { updateCurrentUser, firestore } from "../utils/FirebaseUtils";
 
 import { productListSelector } from "../redux/reducers/product-list/ProductListSelectors";
 import { updateUser } from "../redux/reducers/user/UserActions";
+import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
+import {
+  showNotification,
+  removeNotification,
+} from "../redux/reducers/notification/NotifcationActions";
 
 import useListState from "../hooks/UseListState";
 import useToggleState from "../hooks/UseToggleState";
@@ -25,11 +30,8 @@ import AccountTabbedContainer from "../layouts/AccountTabbedContainer";
 import Page from "./Page";
 
 import useStyles from "../styles/pages/AccountStyles";
-import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
-import {
-  showNotification,
-  removeNotification,
-} from "../redux/reducers/notification/NotifcationActions";
+
+import empty from "../img/svg/empty.svg";
 
 const Account = ({
   currentUser,
@@ -390,9 +392,17 @@ const Account = ({
             title="Wish List"
           >
             <div className={classes.Wishlist}>
-              {favoriteProducts.map((favProduct) => (
-                <ProductListItem product={favProduct} key={favProduct.id} />
-              ))}
+              {favoriteProducts.length < 1 ? (
+                <img
+                  className={classes.Empty}
+                  src={empty}
+                  alt="Wishlist Empty"
+                ></img>
+              ) : (
+                favoriteProducts.map((favProduct) => (
+                  <ProductListItem product={favProduct} key={favProduct.id} />
+                ))
+              )}
             </div>
           </AccountTabbedContainer>
           <AccountTabbedContainer
@@ -400,24 +410,32 @@ const Account = ({
             title="Order History"
           >
             <div className={classes.Order_History}>
-              {orders.map((order) => {
-                const amount = order.products.reduce(
-                  (acc, cur) => acc + cur.price * cur.qtc,
-                  0
-                );
+              {orders.length < 1 ? (
+                <img
+                  className={classes.Empty}
+                  src={empty}
+                  alt="Wishlist Empty"
+                ></img>
+              ) : (
+                orders.map((order) => {
+                  const amount = order.products.reduce(
+                    (acc, cur) => acc + cur.price * cur.qtc,
+                    0
+                  );
 
-                return (
-                  <OrderListItem
-                    orderId={order.orderNumber}
-                    amount={
-                      amount +
-                      order.shipping.cost -
-                      amount * (order.discount / 100)
-                    }
-                    receiptUrl={order.receiptUrl}
-                  />
-                );
-              })}
+                  return (
+                    <OrderListItem
+                      orderId={order.orderNumber}
+                      amount={
+                        amount +
+                        order.shipping.cost -
+                        amount * (order.discount / 100)
+                      }
+                      receiptUrl={order.receiptUrl}
+                    />
+                  );
+                })
+              )}
             </div>
           </AccountTabbedContainer>
         </div>

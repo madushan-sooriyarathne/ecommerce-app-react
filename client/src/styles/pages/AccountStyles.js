@@ -39,18 +39,27 @@ export default createUseStyles({
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "3rem",
     scrollY: "auto",
+    padding: "0.5rem",
   },
 
   Order_History: {
-    display: "flex",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "2rem",
     height: "70rem",
-    flexDirection: "column",
     overflowY: "auto",
     padding: "0.5rem",
 
-    "& > *:not(:last-child)": {
-      marginBottom: "2rem",
-    },
+    // "& > *:not(:last-child)": {
+    //   marginBottom: "2rem",
+    // },
+  },
+
+  Empty: {
+    justifySelf: "center",
+    gridColumn: "1 / -1",
+    width: "40rem",
+    height: "40rem",
   },
 
   button_input_field: {

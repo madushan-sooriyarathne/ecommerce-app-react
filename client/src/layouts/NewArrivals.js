@@ -10,7 +10,7 @@ import HeadingPrimarySlim from "../components/headings/HeadingPrimarySlim";
 import useStyles from "../styles/layouts/NewArrivalsStyles";
 import BoxSpinner from "../components/loading-animations/BoxSpinner";
 
-import empty from "../img/svg/cart-empty.svg";
+import empty from "../img/svg/empty.svg";
 
 const NewArrivals = ({ productList, firebaseInitialized }) => {
   const classes = useStyles();

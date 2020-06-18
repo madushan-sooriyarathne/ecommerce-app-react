@@ -58,13 +58,6 @@ const Signup = ({
       try {
         const userAuth = await signupWithEmailAndPassword(email, password);
 
-        // // update current user's displayName and photoURl
-        // await auth.currentUser.updateProfile({
-        //   displayName: name,
-        //   photoURL:
-        //     "https://firebasestorage.googleapis.com/v0/b/winter-70a60.appspot.com/o/img_avatar2.png?alt=media&token=2732be80-d271-4d99-9250-c2511b3db884",
-        // });
-
         const user = await persistUser(userAuth.user, { displayName: name });
 
         setCurrentUser(user);
