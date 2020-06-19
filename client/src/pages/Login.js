@@ -145,7 +145,7 @@ const Login = ({ showNotification, removeNotification }) => {
           </ButtonStatic>
         </FormContainer>
         <div className={classes.RedirectLinks}>
-          <Link to="/reset-password">Forgot Password?</Link>
+          <Link to="/resetPassword">Forgot Password?</Link>
           <Link to="/signup">Don't have an account?</Link>
         </div>
       </Container>

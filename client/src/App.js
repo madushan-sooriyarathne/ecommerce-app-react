@@ -33,6 +33,7 @@ import Footer from "./layouts/Footer";
 import useStyles from "./styles/AppStyles";
 import ProductPage from "./pages/ProductPage";
 import SnackBar from "./components/SnackBar";
+import SendResetPassword from "./pages/SendResetPassword";
 
 const App = ({
   currentUser,
@@ -169,10 +170,22 @@ const App = ({
         />
 
         {/* // TODO: Update password Route ==> Protected Route */}
-        <Route exact path="/updatePassword" render={() => <UpdatePassword />} />
+        <Route
+          exact
+          path="/updatePassword"
+          render={() =>
+            currentUser ? <Redirect to="/login" /> : <UpdatePassword />
+          }
+        />
 
         {/* // TODO: Update Email Route ==> Protected Route */}
-        <Route exact path="/updateEmail" render={() => <UpdateEmail />} />
+        <Route
+          exact
+          path="/updateEmail"
+          render={() =>
+            currentUser ? <Redirect to="/login" /> : <UpdateEmail />
+          }
+        />
 
         {/* // Checkout Route ==> Protected Route */}
         <Route
@@ -209,6 +222,11 @@ const App = ({
           exact
           path="/order_tracking/:order_id"
           render={() => (currentUser ? <OrderTracking /> : <Redirect to="/" />)}
+        />
+        <Route
+          exact
+          path="/resetPassword"
+          render={() => <SendResetPassword />}
         />
       </Switch>
       <Footer />
