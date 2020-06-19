@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import firebase, { auth } from "../utils/FirebaseUtils";
+import firebase, { auth, firestore } from "../utils/FirebaseUtils";
 
 import {
   showNotification,
@@ -52,20 +52,53 @@ const UpdateEmail = ({ showNotification, removeNotification }) => {
       // user is re-authenticated
       //change the email of current user
       try {
+        // update email in firebase auth
         await currentUser.updateEmail(newEmail);
 
-        // Email updated!
+        // update email in firestore database
+        const currentUserRef = firestore
+          .collection("users")
+          .doc(currentUser.uid);
+
+        try {
+          currentUserRef.update({ email: newEmail });
+
+          // at this point user's email is updated in both auth system and firestore database
+          showNotification({
+            message: "Email updated successfully",
+            type: "success",
+          });
+          setTimeout(() => removeNotification(), 5000);
+
+          // show goto verify email page button
+          setEmailUpdated(true);
+        } catch (error) {
+          // if error happen in saving new email to firestore database,
+          // we need to revert auth email change
+          console.error("im here");
+          // create new credentials with email just changed
+          const newCred = firebase.auth.EmailAuthProvider.credential(
+            newEmail,
+            password
+          );
+
+          // re-authenticate user with new credentials
+          await currentUser.reauthenticateWithCredential(newCred);
+
+          // update Email
+          await currentUser.updateEmail(currentEmail);
+
+          // show a error popup to user
+          showNotification({
+            message: "Error updating email. Please try again",
+            type: "error",
+          });
+          setTimeout(() => removeNotification(), 5000);
+        }
+
         // show notification
 
         // show error popup to user
-        showNotification({
-          message: "Email updated successfully",
-          type: "success",
-        });
-        setTimeout(() => removeNotification(), 5000);
-
-        // show goto verify email page button
-        setEmailUpdated(true);
       } catch (error) {
         // show error popup to user
         showNotification({
