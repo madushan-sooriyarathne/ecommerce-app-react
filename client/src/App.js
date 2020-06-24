@@ -34,6 +34,7 @@ import useStyles from "./styles/AppStyles";
 import ProductPage from "./pages/ProductPage";
 import SnackBar from "./components/SnackBar";
 import SendResetPassword from "./pages/SendResetPassword";
+import About from "./pages/About";
 
 const App = ({
   currentUser,
@@ -103,6 +104,7 @@ const App = ({
       <NavBar />
       <Switch>
         <Route exact path="/" render={() => <Home />} />
+        <Route exact path="/about" component={About} />
         <Route exact path="/shop" render={() => <Shop />} />
 
         <Route
