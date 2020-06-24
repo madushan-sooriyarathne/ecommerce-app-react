@@ -201,10 +201,7 @@ const Account = ({
     <Page>
       <div className={classes.Account}>
         <div className={classes.Account_navigation}>
-          <CurrentUserBadge
-            username={currentUser.displayName.split(" ")[0]}
-            displayImage={currentUser.photoURL}
-          />
+          <CurrentUserBadge currentUser={currentUser} />
           <div className={classes.Account_NavButtons}>
             {accountContent.map((item) => (
               <TabButton

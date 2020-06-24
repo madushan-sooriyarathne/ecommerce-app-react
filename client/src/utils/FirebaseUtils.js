@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 // Other firebase product modules
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,8 +19,9 @@ const firebaseConfig = {
 // Initializing the firebase object
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+const auth = firebase.auth(); // firebase auth object
+const firestore = firebase.firestore(); // firestore real time database object
+const storage = firebase.storage(); // store object
 
 // Google Auth Provider
 let googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -201,6 +203,7 @@ export default firebase;
 export {
   auth,
   firestore,
+  storage,
   signupWithGoogle,
   signupWithFacebook,
   signInWithEmailAndPassword,

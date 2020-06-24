@@ -28,8 +28,7 @@ const NavBar = ({ firebaseInitialized, currentUser, toggleFoldableMenu }) => {
           {firebaseInitialized ? (
             currentUser ? (
               <CurrentUserBadge
-                username={currentUser.displayName.split(" ")[0]}
-                displayImage={currentUser.photoURL}
+                currentUser={currentUser}
                 withAccountLink={true}
               />
             ) : (
