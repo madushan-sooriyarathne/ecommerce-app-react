@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "/client/build/", "index.html"));
+    res.sendFile(path.join(__dirname, "client/build/", "index.html"));
   });
 }
 
@@ -61,9 +61,9 @@ const createCard = async (customerId, token) => {
     }
   };
 
-app.get("/", (req, res) => {
-  res.status(200).send({ status: "success", message: "Hello World" });
-});
+// app.get("/", (req, res) => {
+//   res.status(200).send({ status: "success", message: "Hello World" });
+// });
 
 app.post("/payment", async (req, res) => {
   let customerId = "";
