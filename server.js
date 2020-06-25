@@ -1,6 +1,7 @@
 /* eslint-disable no-process-env */
 const express = require("express");
 const cors = require("cors");
+const connect = require("connect");
 const bodyParser = require("body-parser");
 const path = require("path");
 const stripeLoader = require("stripe");
@@ -18,53 +19,49 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build/", "index.html"));
-  });
-}
-
+// create a stripe card and attach it to given customer id
 const createCard = async (customerId, token) => {
-    try {
-      const card = await stripe.customers.createSource(customerId, {
-        source: token.id,
-      });
+  try {
+    const card = await stripe.customers.createSource(customerId, {
+      source: token.id,
+    });
 
-      return card;
-    } catch (error) {
-      console.error(
-        `Error occurred while creating the card : ${error.message}`
-      );
-    }
-  },
-  createCustomer = async (customerDetails) => {
-    try {
-      const customer = await stripe.customers.create({
-        address: customerDetails.billing_address,
-        email: customerDetails.email,
+    return card;
+  } catch (error) {
+    console.error(`Error occurred while creating the card : ${error.message}`);
+  }
+};
+
+// crete a stripe user if user not already exists
+createCustomer = async (customerDetails) => {
+  try {
+    const customer = await stripe.customers.create({
+      address: customerDetails.billing_address,
+      email: customerDetails.email,
+      name: customerDetails.name,
+      phone: customerDetails.phone,
+      shipping: {
+        address: customerDetails.shipping_address,
         name: customerDetails.name,
         phone: customerDetails.phone,
-        shipping: {
-          address: customerDetails.shipping_address,
-          name: customerDetails.name,
-          phone: customerDetails.phone,
-        },
-      });
+      },
+    });
 
-      return customer;
-    } catch (error) {
-      console.log(
-        `Error occurred while creating the customer : ${error.message}`
-      );
-    }
-  };
+    return customer;
+  } catch (error) {
+    console.log(
+      `Error occurred while creating the customer : ${error.message}`
+    );
+  }
+};
 
-// app.get("/", (req, res) => {
-//   res.status(200).send({ status: "success", message: "Hello World" });
-// });
+app.use(express.static(path.join(__dirname, "client/build")));
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build/", "index.html"));
+});
+
+// Stripe payment route
 app.post("/payment", async (req, res) => {
   let customerId = "";
 
@@ -101,6 +98,7 @@ app.post("/payment", async (req, res) => {
   }
 });
 
+// Listen to incoming requests
 app.listen(port, (error) => {
   if (error) {
     console.log(error.message);
