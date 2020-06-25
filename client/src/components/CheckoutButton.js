@@ -18,7 +18,7 @@ const CheckoutButton = ({ amount, handleFormSubmit }) => {
     panelLabel: "Pay", // prepended to the amount in the bottom pay button
     amount: amount * 100, // cents
     currency: "USD",
-    stripeKey: process.env.REACT_APP_STRIPE_KEY,
+    stripeKey: "pk_test_ATPJil7rjAI6NefMCT1Cr10100QtHkMk19",
     locale: "lk",
     email: "info@winter.com",
     // Note: Enabling either address option will give the user the ability to
