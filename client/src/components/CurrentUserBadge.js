@@ -65,6 +65,7 @@ const CurrentUserBadge = ({
     }
   };
 
+  // handle profile picture upload to firebase storage and update the url in firestore db
   const handleFileUpload = async (event) => {
     // create a firebase storage ref
     const storageRef = storage.ref();
