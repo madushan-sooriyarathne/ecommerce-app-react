@@ -1,7 +1,6 @@
 /* eslint-disable no-process-env */
 const express = require("express");
 const cors = require("cors");
-const connect = require("connect");
 const bodyParser = require("body-parser");
 const path = require("path");
 const stripeLoader = require("stripe");
