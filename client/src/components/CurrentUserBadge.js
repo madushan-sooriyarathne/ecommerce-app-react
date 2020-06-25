@@ -35,6 +35,7 @@ const CurrentUserBadge = ({
   //History object
   const history = useHistory();
 
+  // handle user singed out
   const handleUserSignOut = (event) => {
     try {
       signOutUser();
