@@ -94,11 +94,7 @@ const ProductPage = ({
           <div className={classes.ProductPage_images}>
             {[currentProduct.imgURL, ...currentProduct.secondaryImg].map(
               (img) => (
-                <img
-                  src={img}
-                  alt="product image"
-                  className={classes.Img_box}
-                ></img>
+                <img src={img} alt="product" className={classes.Img_box}></img>
               )
             )}
           </div>

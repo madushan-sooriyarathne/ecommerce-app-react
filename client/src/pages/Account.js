@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -73,27 +73,23 @@ const Account = ({
     currentUser ? currentUser.phoneNumber : ""
   );
 
-  const [country, updateCountry, resetCountry] = useInputState(
+  const [country, updateCountry] = useInputState(
     currentUser ? currentUser.address.country : ""
   );
 
-  const [
-    addressLineOne,
-    updateAddressLineOne,
-    resetAddressLineOne,
-  ] = useInputState(currentUser ? currentUser.address.addressLineOne : "");
+  const [addressLineOne, updateAddressLineOne] = useInputState(
+    currentUser ? currentUser.address.addressLineOne : ""
+  );
 
-  const [
-    addressLineTwo,
-    updateAddressLineTwo,
-    resetAddressLineTwo,
-  ] = useInputState(currentUser ? currentUser.address.addressLineTwo : "");
+  const [addressLineTwo, updateAddressLineTwo] = useInputState(
+    currentUser ? currentUser.address.addressLineTwo : ""
+  );
 
-  const [city, updateCity, resetCity] = useInputState(
+  const [city, updateCity] = useInputState(
     currentUser ? currentUser.address.city : ""
   );
 
-  const [postalCode, updatePostalCode, resetPostalCode] = useInputState(
+  const [postalCode, updatePostalCode] = useInputState(
     currentUser ? currentUser.address.postalCode : ""
   );
 
@@ -176,6 +172,7 @@ const Account = ({
     toggleIsDisabled();
   };
 
+  // getting the current user data
   useEffect(() => {
     const getOrderData = async () => {
       const orderCollectionRef = firestore
@@ -195,7 +192,7 @@ const Account = ({
     };
 
     getOrderData();
-  }, [currentUser.uid]);
+  }, [currentUser.uid, showNotification, removeNotification]);
 
   return (
     <Page>

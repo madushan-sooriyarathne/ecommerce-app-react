@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+import { useHistory } from "react-router-dom";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import StripeCheckoutForm from "./StripeCheckoutForm";
-import ButtonStatic from "./buttons/ButtonStatic";
 
 import useStyles from "../styles/components/StripePaymentPopupStyles";
 
 import sprites from "../img/svg/sprites.svg";
-import { useHistory } from "react-router-dom";
 
 // Load stripe as a promise
 const stripePromise = loadStripe("pk_test_ATPJil7rjAI6NefMCT1Cr10100QtHkMk19");

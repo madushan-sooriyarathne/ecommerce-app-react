@@ -23,7 +23,7 @@ const SearchResultItem = ({ name, image, id, price, handleClose }) => {
       <img
         className={classes.SearchResultItem_Image}
         src={image}
-        alt="Product Image"
+        alt="Product"
       ></img>
       <div className={classes.SearchResultItem_details}>
         <p className={classes.Details_name}>{name}</p>

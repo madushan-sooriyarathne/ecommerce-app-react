@@ -69,7 +69,7 @@ const AddToFavoriteButton = (props) => {
     };
 
     updateFavoriteStatus();
-  }, [isFavorite, currentUserId]);
+  }, [isFavorite, currentUserId, productId]);
 
   if (currentUserId) {
     return (

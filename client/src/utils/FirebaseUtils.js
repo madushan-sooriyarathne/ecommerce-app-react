@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-// Other firebase product modules
+// firebase product modules
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
@@ -30,20 +30,6 @@ googleProvider.setCustomParameters({ prompt: "consent" });
 // Facebook Auth Provider
 let facebookProvider = new firebase.auth.FacebookAuthProvider();
 facebookProvider.setCustomParameters({ display: "popup" });
-
-// Database Operations
-const getUserDocument = async (uid) => {
-  if (!uid) return null;
-  try {
-    const userDocumentSnap = await firestore.collection("users").doc(uid).get();
-    return {
-      uid,
-      ...userDocumentSnap.data(),
-    };
-  } catch (error) {
-    console.error(error.message);
-  }
-};
 
 // Store signed-up user in firestore database
 const persistUser = async (userAuth, additionalData) => {

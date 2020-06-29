@@ -5,7 +5,6 @@ import CategoryContainer from "../layouts/CategoryContainer";
 import NewArrivals from "../layouts/NewArrivals";
 import FeaturesGrid from "../layouts/FeaturesGrid";
 import Newsletter from "../layouts/Newsletter";
-import BoxSpinner from "../components/loading-animations/BoxSpinner";
 
 import useStyles from "../styles/pages/HomeStyles";
 
@@ -16,7 +15,6 @@ const Home = () => {
       <HeroBanner />
       <CategoryContainer />
       <NewArrivals />
-
       <FeaturesGrid />
       <Newsletter />
     </div>

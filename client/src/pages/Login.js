@@ -1,12 +1,11 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 import useInputState from "../hooks/UseInputState";
 
 import {
   signInWithEmailAndPassword,
-  persistUser,
   signupWithGoogle,
   signupWithFacebook,
 } from "../utils/FirebaseUtils";
@@ -32,13 +31,10 @@ const Login = ({ showNotification, removeNotification }) => {
   const [email, updateEmail, resetEmailField] = useInputState("");
   const [password, updatePassword, resetPasswordField] = useInputState("");
 
-  // History
-  const history = useHistory();
-
   //Styles
   const classes = useStyles();
 
-  //form submit event handler
+  //form submit event handler / sign in with email and password
   const handleSigninForm = async (event) => {
     event.preventDefault();
 
