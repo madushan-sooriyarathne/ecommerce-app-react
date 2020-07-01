@@ -103,6 +103,21 @@ const updateCurrentUser = async (userId, updatedFields) => {
   }
 };
 
+// delete a user
+const deleteUser = async (userId) => {
+  const userDocRef = firestore.collection("users").doc(userId);
+
+  try {
+    await userDocRef.delete();
+
+    // user is deleted
+    return { status: "success" };
+  } catch (error) {
+    return { status: "error", message: error };
+  }
+};
+
+// add a item to current user's favorite list
 const addToFavorite = async (userId, productId) => {
   const userRef = firestore.collection("users").doc(userId);
 
@@ -119,6 +134,7 @@ const addToFavorite = async (userId, productId) => {
   }
 };
 
+// remove a item from current user's favorite list
 const removeFavorite = async (userId, productId) => {
   const userRef = firestore.collection("users").doc(userId);
 
@@ -198,6 +214,7 @@ export {
   persistUser,
   saveOrder,
   updateCurrentUser,
+  deleteUser,
   addToFavorite,
   removeFavorite,
 };

@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { updateCurrentUser, firestore } from "../utils/FirebaseUtils";
+import firebase, {
+  updateCurrentUser,
+  firestore,
+  auth,
+  deleteUser,
+  signupWithFacebook,
+  signupWithGoogle,
+} from "../utils/FirebaseUtils";
 
 import { productListSelector } from "../redux/reducers/product-list/ProductListSelectors";
 import { updateUser } from "../redux/reducers/user/UserActions";
@@ -25,13 +32,15 @@ import CurrentUserBadge from "../components/CurrentUserBadge";
 import ProductListItem from "../components/ProductListItem";
 import OrderListItem from "../components/OrderListItem";
 import AuthProviderBadge from "../components/AuthProviderBadge";
-
+import FormContainer from "../components/FormContainer";
 import AccountTabbedContainer from "../layouts/AccountTabbedContainer";
 import Page from "./Page";
 
 import useStyles from "../styles/pages/AccountStyles";
 
 import empty from "../img/svg/empty.svg";
+import Popup from "../layouts/Popup";
+import HeadingPrimary from "../components/headings/HeadingPrimary";
 
 const Account = ({
   currentUser,
@@ -44,6 +53,7 @@ const Account = ({
   // State
   const [isDisabled, toggleIsDisabled] = useToggleState(true);
   const [loading, setLoading] = useState(false);
+  const [popup, showPopup] = useState(true);
   const [orders, setOrders] = useState([]);
 
   const [accountContent, toggleAccountContentItem] = useListState([
@@ -93,6 +103,13 @@ const Account = ({
     currentUser ? currentUser.address.postalCode : ""
   );
 
+  const [popupEmail, updatePopupEmail, resetPopupEmail] = useInputState("");
+  const [
+    popupPassword,
+    updatePopupPassword,
+    resetPopupPassword,
+  ] = useInputState("");
+
   // filter the products and get the favorite products
   let favoriteProducts = [];
 
@@ -118,6 +135,78 @@ const Account = ({
     if (el) {
       const id = parseInt(el.dataset.id);
       toggleAccountContentItem(id);
+    }
+  };
+
+  // Close Popup
+  const closePopup = (event) => {
+    showPopup(false);
+
+    // show notification
+    showNotification({
+      message: "Process interrupted by user",
+      type: "warning",
+    });
+    setTimeout(() => removeNotification(), 5000);
+  };
+
+  // Handle popup form submit
+  const handlePopupFormSubmit = async (event) => {
+    event.preventDefault();
+
+    if ((popupEmail !== "") & (popupPassword !== "")) {
+      // create credential using email and password;
+      const cred = firebase.auth.EmailAuthProvider.credential(
+        popupEmail,
+        popupPassword
+      );
+
+      // re-authenticate user with credentials created above
+      try {
+        await auth.currentUser.reauthenticateWithCredential(cred);
+
+        // user is re-authenticated; proceed with delete user
+        try {
+          await auth.currentUser.delete();
+
+          // user is successfully deleted;
+          // delete user from firestore db
+          const status = deleteUser(currentUser.id);
+          if (status === "success") {
+            // show successful message to user and redirect to homepage
+            showNotification({
+              message: "Successfully deleted the user",
+              type: "success",
+            });
+            setTimeout(() => removeNotification(), 5000);
+          } else {
+            //  show a error message to user
+            showNotification({
+              message: "Error Deleting the user from database",
+              type: "error",
+            });
+            setTimeout(() => removeNotification(), 5000);
+
+            console.error(`Error deleting the user : ${status.message}`);
+          }
+        } catch (error) {
+          //  show a error message to user
+          showNotification({
+            message: "Error Deleting the user",
+            type: "error",
+          });
+          setTimeout(() => removeNotification(), 5000);
+
+          console.error(`Error deleting the user : ${error.message}`);
+        }
+      } catch (error) {
+        showNotification({
+          message: error.message,
+          type: "error",
+        });
+        setTimeout(() => removeNotification(), 5000);
+        console.error(`Error authenticating the user : ${error.message}`);
+      }
     }
   };
 
@@ -172,6 +261,48 @@ const Account = ({
     toggleIsDisabled();
   };
 
+  // handler Delete User action
+  const handleDeleteUser = async (event) => {
+    // re-authenticate user
+
+    // if auth provider is facebook or Google popup for re-authenticate process. else (means email and password)
+    // show a popup model for user to enter email and password.
+    if (currentUser.providerId === "facebook.com") {
+      try {
+        await signupWithFacebook();
+
+        // sign-in with facebook success
+      } catch (error) {
+        showNotification({
+          message: "Process interrupted by user",
+          type: "warning",
+        });
+        setTimeout(() => removeNotification(), 5000);
+
+        console.error("Error signing in with Facebook " + error);
+      }
+    } else if (currentUser.providerId === "google.com") {
+      try {
+        await signupWithGoogle();
+
+        // sign-in with Google success
+      } catch (error) {
+        // show warning message to user
+        showNotification({
+          message: "Process interrupted by user",
+          type: "warning",
+        });
+        setTimeout(() => removeNotification(), 5000);
+
+        console.error("Error signing in with Google " + error);
+      }
+    } else {
+      // this is email and password sign-in
+      // show the popup to the user
+      showPopup(true);
+    }
+  };
+
   // getting the current user data
   useEffect(() => {
     const getOrderData = async () => {
@@ -221,6 +352,7 @@ const Account = ({
                 primaryColor="var(--color-error)"
                 secondaryColor="var(--color-white)"
                 isSmall={true}
+                onClick={handleDeleteUser}
                 styles={{
                   padding: "1rem",
                   fontSize: "1.2rem",
@@ -360,7 +492,7 @@ const Account = ({
                 <FormField
                   id="PostalCodeField"
                   label="Postal Code"
-                  type="LastName"
+                  type="text"
                   value={postalCode}
                   onChange={updatePostalCode}
                   isRequired={true}
@@ -434,6 +566,40 @@ const Account = ({
           </AccountTabbedContainer>
         </div>
       </div>
+      <Popup showPopup={popup} handlePopupClose={closePopup}>
+        <FormContainer handleSubmit={handlePopupFormSubmit}>
+          <HeadingPrimary
+            styles={{ marginBottom: "4rem", textAlign: "center" }}
+          >
+            Please Re-Authenticate yourself
+          </HeadingPrimary>
+          <FormField
+            id="PopupEmailField"
+            label="Email"
+            type="email"
+            value={popupEmail}
+            onChange={updatePopupEmail}
+            isRequired={true}
+          />
+          <FormField
+            id="popupPasswordField"
+            label="Password"
+            type="password"
+            value={popupPassword}
+            onChange={updatePopupPassword}
+            isRequired={true}
+          />
+          <ButtonStatic
+            primaryColor="var(--color-primary)"
+            secondaryColor="var(--color-white)"
+            type="submit"
+            isSmall={true}
+            styles={{ marginTop: "1rem", alignSelf: "stretch  " }}
+          >
+            Delete My Account
+          </ButtonStatic>
+        </FormContainer>
+      </Popup>
     </Page>
   );
 };
