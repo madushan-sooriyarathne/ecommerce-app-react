@@ -103,17 +103,29 @@ const updateCurrentUser = async (userId, updatedFields) => {
   }
 };
 
-// delete a user
-const deleteUser = async (userId) => {
-  const userDocRef = firestore.collection("users").doc(userId);
+// Delete current user from auth System
+const deleteUser = async () => {
+  const userId = auth.currentUser.uid;
 
+  // first we have to delete user from firebase
   try {
-    await userDocRef.delete();
-
-    // user is deleted
-    return { status: "success" };
+    const userRef = firestore.collection("users").doc(userId);
+    await userRef.delete();
+    // user is successfully deleted from firestore.
+    // proceed with user deletion in auth
+    try {
+      await auth.currentUser.delete();
+      // user deleted from firebase auth.
+      return { status: "success" };
+    } catch (error) {
+      // log error to console
+      console.error(`error deleting user from firebase auth ${error}`);
+      return { status: "error", error: error };
+    }
   } catch (error) {
-    return { status: "error", message: error };
+    // log error to console
+    console.error(`error deleting user from firestore ${error}`);
+    return { status: "error", error: error };
   }
 };
 

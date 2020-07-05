@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
 import firebase, {
@@ -12,7 +12,7 @@ import firebase, {
 } from "../utils/FirebaseUtils";
 
 import { productListSelector } from "../redux/reducers/product-list/ProductListSelectors";
-import { updateUser } from "../redux/reducers/user/UserActions";
+import { updateUser, setCurrentUser } from "../redux/reducers/user/UserActions";
 import { favoriteProductListSelector } from "../redux/reducers/favorite-product-list/FavoriteProductListSelectors";
 import {
   showNotification,
@@ -47,13 +47,17 @@ const Account = ({
   favoriteProductList,
   productList,
   updateCurrentUserLocal,
+  removeCurrentUser,
   showNotification,
   removeNotification,
 }) => {
+  // history hook
+  const history = useHistory();
+
   // State
   const [isDisabled, toggleIsDisabled] = useToggleState(true);
   const [loading, setLoading] = useState(false);
-  const [popup, showPopup] = useState(true);
+  const [popup, showPopup] = useState(false);
   const [orders, setOrders] = useState([]);
 
   const [accountContent, toggleAccountContentItem] = useListState([
@@ -150,6 +154,28 @@ const Account = ({
     setTimeout(() => removeNotification(), 5000);
   };
 
+  const handleUserNotification = (status) => {
+    if (status.status === "error") {
+      showNotification({
+        message: "Error deleting the user",
+        type: "error",
+      });
+      setTimeout(() => removeNotification(), 5000);
+    } else {
+      // remove current user
+      removeCurrentUser();
+
+      // redirect to login page
+      history.push("/login");
+
+      showNotification({
+        message: "User deleted!",
+        type: "success",
+      });
+      setTimeout(() => removeNotification(), 5000);
+    }
+  };
+
   // Handle popup form submit
   const handlePopupFormSubmit = async (event) => {
     event.preventDefault();
@@ -165,40 +191,10 @@ const Account = ({
       try {
         await auth.currentUser.reauthenticateWithCredential(cred);
 
-        // user is re-authenticated; proceed with delete user
-        try {
-          await auth.currentUser.delete();
+        const status = await deleteUser();
 
-          // user is successfully deleted;
-          // delete user from firestore db
-          const status = deleteUser(currentUser.id);
-          if (status === "success") {
-            // show successful message to user and redirect to homepage
-            showNotification({
-              message: "Successfully deleted the user",
-              type: "success",
-            });
-            setTimeout(() => removeNotification(), 5000);
-          } else {
-            //  show a error message to user
-            showNotification({
-              message: "Error Deleting the user from database",
-              type: "error",
-            });
-            setTimeout(() => removeNotification(), 5000);
-
-            console.error(`Error deleting the user : ${status.message}`);
-          }
-        } catch (error) {
-          //  show a error message to user
-          showNotification({
-            message: "Error Deleting the user",
-            type: "error",
-          });
-          setTimeout(() => removeNotification(), 5000);
-
-          console.error(`Error deleting the user : ${error.message}`);
-        }
+        // show notification to user
+        handleUserNotification(status);
       } catch (error) {
         showNotification({
           message: error.message,
@@ -271,7 +267,9 @@ const Account = ({
       try {
         await signupWithFacebook();
 
-        // sign-in with facebook success
+        const status = await deleteUser();
+
+        handleUserNotification(status);
       } catch (error) {
         showNotification({
           message: "Process interrupted by user",
@@ -285,7 +283,9 @@ const Account = ({
       try {
         await signupWithGoogle();
 
-        // sign-in with Google success
+        const status = await deleteUser();
+
+        handleUserNotification(status);
       } catch (error) {
         // show warning message to user
         showNotification({
@@ -614,6 +614,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   updateCurrentUserLocal: (updatedFields) =>
     dispatch(updateUser(updatedFields)),
+  removeCurrentUser: () => dispatch(setCurrentUser(null)),
   showNotification: (notification) => dispatch(showNotification(notification)),
   removeNotification: () => dispatch(removeNotification()),
 });

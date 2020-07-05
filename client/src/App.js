@@ -62,13 +62,16 @@ const App = ({
 
             userRef.onSnapshot(async (snapshot) => {
               // set the current user data from logged in user
-              setCurrentUser({
-                ...snapshot.data(),
-                uid: userRef.id,
-              });
 
-              // update the favorite list
-              updateFavorites(snapshot.data().favorites);
+              if (snapshot.exists) {
+                setCurrentUser({
+                  ...snapshot.data(),
+                  uid: userRef.id,
+                });
+
+                // update the favorite list
+                updateFavorites(snapshot.data().favorites);
+              }
 
               //Set Firebase state
               setInitialized();
