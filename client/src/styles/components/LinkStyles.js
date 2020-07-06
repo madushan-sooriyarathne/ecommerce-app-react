@@ -5,7 +5,7 @@ export default createUseStyles({
     textDecoration: "none",
     fontWeight: "500",
     color: "var(--color-primary)",
-    fontSize: (props) => props.fontSize,
+    fontSize: "1.8rem",
     position: "relative",
     cursor: "pointer",
     transition: "all 0.2s ease-out",
@@ -13,7 +13,6 @@ export default createUseStyles({
 
     "&:hover": {
       transform: "scale(1.1)",
-      color: "var(--color-primary-medium)",
     },
 
     "&::before": {
