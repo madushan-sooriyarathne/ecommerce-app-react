@@ -27,6 +27,7 @@ import TabButton from "../components/TabButton";
 import FormField from "../components/FormField";
 import ButtonStatic from "../components/buttons/ButtonStatic";
 import HeadingSecondary from "../components/headings/HeadingSecondary";
+import HeadingPrimarySlim from "../components/headings/HeadingPrimarySlim";
 import ButtonAnimated from "../components/buttons/ButtonAnimated";
 import CurrentUserBadge from "../components/CurrentUserBadge";
 import ProductListItem from "../components/ProductListItem";
@@ -344,6 +345,7 @@ const Account = ({
           </div>
         </div>
         <div className={classes.Account_details}>
+          {/* Account Overview */}
           <AccountTabbedContainer
             title="Account Overview"
             id={classes.Account_details_overview}
@@ -513,17 +515,24 @@ const Account = ({
               </form>
             </div>
           </AccountTabbedContainer>
+
+          {/* Favorite Products / Wishlist */}
           <AccountTabbedContainer
             id={classes.Account_details_wishlist}
             title="Wish List"
           >
             <div className={classes.Wishlist}>
               {favoriteProducts.length < 1 ? (
-                <img
-                  className={classes.Empty}
-                  src={empty}
-                  alt="Wishlist Empty"
-                ></img>
+                <div className={classes.Empty_container}>
+                  <img
+                    className={classes.Empty_image}
+                    src={empty}
+                    alt="Wishlist Empty"
+                  ></img>
+                  <HeadingPrimarySlim styles={{ color: "var(--color-error)" }}>
+                    You don't have any favorite products.
+                  </HeadingPrimarySlim>
+                </div>
               ) : (
                 favoriteProducts.map((favProduct) => (
                   <ProductListItem product={favProduct} key={favProduct.id} />
@@ -531,17 +540,24 @@ const Account = ({
               )}
             </div>
           </AccountTabbedContainer>
+
+          {/* Order History */}
           <AccountTabbedContainer
             id={classes.Account_details_orderHistory}
             title="Order History"
           >
             <div className={classes.Order_History}>
               {orders.length < 1 ? (
-                <img
-                  className={classes.Empty}
-                  src={empty}
-                  alt="Wishlist Empty"
-                ></img>
+                <div className={classes.Empty_container}>
+                  <img
+                    className={classes.Empty_image}
+                    src={empty}
+                    alt="Wishlist Empty"
+                  ></img>
+                  <HeadingPrimarySlim styles={{ color: "var(--color-error)" }}>
+                    You haven't made any orders yet.
+                  </HeadingPrimarySlim>
+                </div>
               ) : (
                 orders.map((order) => {
                   const amount = order.products.reduce(
@@ -566,6 +582,8 @@ const Account = ({
           </AccountTabbedContainer>
         </div>
       </div>
+
+      {/* Popup for user delete function */}
       <Popup showPopup={popup} handlePopupClose={closePopup}>
         <FormContainer handleSubmit={handlePopupFormSubmit}>
           <HeadingPrimary

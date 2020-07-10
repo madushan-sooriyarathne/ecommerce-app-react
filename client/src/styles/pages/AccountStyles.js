@@ -55,9 +55,16 @@ export default createUseStyles({
     // },
   },
 
-  Empty: {
+  Empty_container: {
     justifySelf: "center",
     gridColumn: "1 / -1",
+
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  Empty_image: {
     width: "40rem",
     height: "40rem",
   },
