@@ -4,7 +4,7 @@ export default createUseStyles({
   HeadingPrimary: {
     color: "var(--color-primary)",
     fontFamily: "var(--font-family-secondary)",
-    fontSize: "3rem",
+    fontSize: "4rem",
     textTransform: "uppercase",
     letterSpacing: "2px",
   },
