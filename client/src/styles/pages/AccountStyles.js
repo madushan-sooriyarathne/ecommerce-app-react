@@ -45,6 +45,7 @@ export default createUseStyles({
   Order_History: {
     display: "grid",
     gridTemplateColumns: "1fr",
+    gridAutoRows: "max-content",
     gap: "2rem",
     height: "70rem",
     overflowY: "auto",
