@@ -12,7 +12,7 @@ Check the live demo [here](https://winter-fashion.herokuapp.com/)
 
 1. Basic user management with Firebase Authentication
 
-   - Users can signup using email & password / Google / Facebook
+   - Users can sign-up using email & password / Google / Facebook
    - Users can delete their account
    - User can update their account details (including email & password if they signed in using email & password)
    - Reset password
@@ -34,10 +34,15 @@ This project is not yet complete as it still lacks some of the basic and mandato
 
 - Implement responsive design to support mobile & tablet devices.
 - Create an admin panel to do basic admin works (Add, delete, update products, Manage users, Get Insights)
+- Resize the profile image when user upload a new image.
+- Optimize overall images in Website.
+- Refactor redux to use hooks (although almost every component is a functional component in this project I used HOC to connect component to redux state)
+- More Error handling on sign-up process. (Ex: Link multiple providers to a user when they share same email)
+- Find a way to dispatch redux actions with a time-out and refactor notification system.
 - Code documentation / Comments.
-- Some series code refactoring.
+- Some serious code refactoring.
 
-###Run this in your local machine
+### Run this in your local machine
 
 1. clone the repo
 
