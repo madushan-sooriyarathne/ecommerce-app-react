@@ -16,6 +16,7 @@ export default createUseStyles({
     borderRadius: "5px",
     visibility: "hidden",
     opacity: "0",
+    zIndex: "1000",
   },
 
   SnackBar_show: {

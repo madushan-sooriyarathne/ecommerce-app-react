@@ -179,7 +179,7 @@ const App = ({
           exact
           path="/updatePassword"
           render={() =>
-            currentUser ? <Redirect to="/login" /> : <UpdatePassword />
+            currentUser ? <UpdatePassword /> : <Redirect to="/login" />
           }
         />
 
@@ -188,7 +188,7 @@ const App = ({
           exact
           path="/updateEmail"
           render={() =>
-            currentUser ? <Redirect to="/login" /> : <UpdateEmail />
+            currentUser ? <UpdateEmail /> : <Redirect to="/login" />
           }
         />
 
